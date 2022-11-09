@@ -1,6 +1,6 @@
 # Prototype workflow for building and passing through druid artifacts
 
-Name: Druid Build workflow
+name: Druid Build workflow
 
 on: [push]
 
