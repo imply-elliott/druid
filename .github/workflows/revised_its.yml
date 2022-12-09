@@ -1,0 +1,48 @@
+name: Revised Integration Tests shared workflow
+on:
+  workflow_call:
+    inputs:
+      script:
+        description: 'Which IT script to run'
+        required: true
+        type: string
+      compile_jdk:
+        description: 'Which JDK version to compile with'
+        required: true
+        type: string
+      runtime_jdk:
+        description: 'Which JDK version to use at runtime'
+        required: true
+        type: string
+      use_indexer:
+        description: 'Which indexer to use'
+        required: true
+        type: string
+
+env:
+  MVN: mvn -B
+  MAVEN_SKIP: -P skip-static-checks -Dweb.console.skip=true -Dmaven.javadoc.skip=true
+  MAVEN_SKIP_TESTS: -P skip-tests
+  MAVEN_OPTS: -Xmx3000m
+  JVM_RUNTIME: -Djvm.runtime=${{ inputs.runtime_jdk }}
+  USE_INDEXER: ${{ inputs.use_indexer }}
+
+jobs:
+  run-it:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v3
+      - name: Setup java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: ${{ inputs.compile_jdk }}
+          cache: 'maven'
+      - name: Maven install
+        run: |
+          echo 'Running Maven install...' &&
+          ${MVN} clean install -q -ff -pl '!distribution,!:druid-it-image,!:druid-it-cases' ${MAVEN_SKIP} ${MAVEN_SKIP_TESTS} -T1C &&
+          ${MVN} install -q -ff -pl 'distribution' ${MAVEN_SKIP} ${MAVEN_SKIP_TESTS}
+      - name: Run IT
+        run: ${{ inputs.script }}
