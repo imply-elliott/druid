@@ -54,10 +54,11 @@ jobs:
           distribution: 'zulu'
           java-version: ${{ inputs.compile_jdk }}
           cache: 'maven'
-      - name: Maven install
-        run: |
-          echo 'Running Maven install...' &&
-          ${MVN} clean install -q -ff -pl '!distribution,!:druid-it-image,!:druid-it-cases' ${MAVEN_SKIP} ${MAVEN_SKIP_TESTS} -T1C &&
-          ${MVN} install -q -ff -pl 'distribution' ${MAVEN_SKIP} ${MAVEN_SKIP_TESTS}
+      #- name: Maven install
+        #run: |
+        #  echo 'Running Maven install...' &&
+        #  ${MVN} clean install -q -ff -pl '!distribution,!:druid-it-image,!:druid-it-cases' ${MAVEN_SKIP} ${MAVEN_SKIP_TESTS} -T1C &&
+        #  ${MVN} install -q -ff -pl 'distribution' ${MAVEN_SKIP} ${MAVEN_SKIP_TESTS}
+
       - name: Run IT
         run: ${{ inputs.script }}
