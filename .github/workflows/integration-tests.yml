@@ -53,7 +53,7 @@ jobs:
       compile_jdk: 8
       runtime_jdk: 8
       use_indexer: middleManager
-      script: ./it.sh travis HighAvailability
+      script: ./it.sh github HighAvailability
 
   multi-stage-query:
     needs: build
@@ -62,7 +62,7 @@ jobs:
       compile_jdk: 8
       runtime_jdk: 8
       use_indexer: middleManager
-      script: ./it.sh travis MultiStageQuery
+      script: ./it.sh github MultiStageQuery
 
   catalog-integration:
     needs: build
@@ -71,7 +71,7 @@ jobs:
       compile_jdk: 8
       runtime_jdk: 8
       use_indexer: middleManager
-      script: ./it.sh travis Catalog
+      script: ./it.sh github Catalog
 
   batch-index-with-indexer:
     needs: build
@@ -80,4 +80,4 @@ jobs:
       compile_jdk: 8
       runtime_jdk: 8
       use_indexer: indexer
-      script: ./it.sh travis BatchIndex
+      script: ./it.sh github BatchIndex
