@@ -42,7 +42,9 @@ jobs:
           java-version: 8
           cache: 'maven'
       - name: Maven build
-        run: ./it.sh build
+        run: |
+          ./it.sh build &&
+          ./it.sh dist
 
   leadership-and-high-availability:
     needs: build
