@@ -45,6 +45,7 @@ jobs:
         run: ./it.sh build
 
   leadership-and-high-availability:
+    needs: build
     uses: imply-elliott/druid/.github/workflows/revised_its.yml@github-actions-its
     with:
       compile_jdk: 8
@@ -53,6 +54,7 @@ jobs:
       script: ./it.sh travis HighAvailability
 
   multi-stage-query:
+    needs: build
     uses: imply-elliott/druid/.github/workflows/revised_its.yml@github-actions-its
     with:
       compile_jdk: 8
@@ -61,6 +63,7 @@ jobs:
       script: ./it.sh travis MultiStageQuery
 
   catalog-integration:
+    needs: build
     uses: imply-elliott/druid/.github/workflows/revised_its.yml@github-actions-its
     with:
       compile_jdk: 8
@@ -69,6 +72,7 @@ jobs:
       script: ./it.sh travis Catalog
 
   batch-index-with-indexer:
+    needs: build
     uses: imply-elliott/druid/.github/workflows/revised_its.yml@github-actions-its
     with:
       compile_jdk: 8
