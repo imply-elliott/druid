@@ -56,6 +56,7 @@ jobs:
           cache: 'maven'
       - name: Maven install
         run: |
+           ./check_test_suite.py && exit 0 ||
           echo 'Running Maven install...' &&
           ${MVN} clean install -q -ff -pl '!distribution,!:druid-it-image,!:druid-it-cases' ${MAVEN_SKIP} ${MAVEN_SKIP_TESTS} -T1C &&
           ${MVN} install -q -ff -pl 'distribution' ${MAVEN_SKIP} ${MAVEN_SKIP_TESTS}
