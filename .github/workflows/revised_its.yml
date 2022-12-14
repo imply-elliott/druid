@@ -57,6 +57,7 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: druid
+          working-directory: distribution/target
       #- name: Maven install
         #run: |
         #  echo 'Running Maven install...' &&
