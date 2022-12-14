@@ -45,6 +45,10 @@ jobs:
         run: |
           ./it.sh build &&
           ./it.sh dist
+      - uses: actions/upload-artifact@v3
+        with:
+          name: druid
+          path: distribution/target/apache-druid-${DRUID_VERSION}-bin.tar.gz
 
   leadership-and-high-availability:
     needs: build

@@ -54,6 +54,9 @@ jobs:
           distribution: 'zulu'
           java-version: ${{ inputs.compile_jdk }}
           cache: 'maven'
+      - uses: actions/download-artifact@v3
+        with:
+          name: druid
       #- name: Maven install
         #run: |
         #  echo 'Running Maven install...' &&
