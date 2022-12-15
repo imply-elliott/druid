@@ -54,6 +54,7 @@ jobs:
           cache: 'maven'
       - name: Run IT
         run: |
+          set -e
           unset _JAVA_OPTIONS
           # Set MAVEN_OPTS for Surefire launcher. Skip remoteresources to avoid intermittent connection timeouts when
           # resolving the SIGAR dependency.

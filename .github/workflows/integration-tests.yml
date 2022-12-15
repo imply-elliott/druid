@@ -86,10 +86,77 @@ jobs:
       runtime_jdk: 8
       maven_projects: '!processing,!indexing-hadoop,!indexing-service,!extensions-core/kafka-indexing-service,!extensions-core/kinesis-indexing-service,!server,!web-console,!integration-tests,!:druid-it-tools,!:druid-it-image,!:druid-it-cases'
 
-  batch-index:
+  integration-tests-middleManager:
+    strategy:
+      matrix:
+        testing_group: [batch-index, input-format, input-source, perfect-rollup-parallel-batch-index, kafka-index, shuffle-deep-store, kafka-index, custom-coordinator-duties, kafka-index-slow, kafka-transactional-index, kafka-transactional-index-slow, kafka-data-format, ldap-security, realtime-index, append-ingestion, compaction]
     needs: build
-    uses: imply-elliott/druid/.github/workflows/standard_its.yml@github-actions-its
-    with:
-      runtime_jdk: 8
-      testing_groups: -Dgroups=batch-index
-      use_indexer: middleManager
+    steps:
+      - uses: imply-elliott/druid/.github/workflows/standard_its.yml@github-actions-its
+        with:
+          runtime_jdk: 8
+          testing_groups: -Dgroups=${{ matrix.testing_group }}
+          use_indexer: middleManager
+
+  integration-query-middleManager:
+    strategy:
+      matrix:
+        testing_group: [query, query-retry, query-error, security]
+    needs: build
+    steps:
+      - uses: imply-elliott/druid/.github/workflows/standard_its.yml@github-actions-its
+        with:
+          runtime_jdk: 8
+          testing_groups: -Dgroups=${{ matrix.testing_group }}
+          use_indexer: middleManager
+          override_config_path: ./environment-configs/test-groups/prepopulated-data
+
+  integration-other:
+    strategy:
+      matrix:
+        indexer: [middleManager, indexer]
+    needs: build
+    steps:
+      - uses: imply-elliott/druid/.github/workflows/standard_its.yml@github-actions-its
+        with:
+          runtime_jdk: 8
+          testing_groups: -DexcludedGroups=batch-index,input-format,input-source,perfect-rollup-parallel-batch-index,kafka-index,query,query-retry,query-error,realtime-index,security,ldap-security,s3-deep-storage,gcs-deep-storage,azure-deep-storage,hdfs-deep-storage,s3-ingestion,kinesis-index,kinesis-data-format,kafka-transactional-index,kafka-index-slow,kafka-transactional-index-slow,kafka-data-format,hadoop-s3-to-s3-deep-storage,hadoop-s3-to-hdfs-deep-storage,hadoop-azure-to-azure-deep-storage,hadoop-azure-to-hdfs-deep-storage,hadoop-gcs-to-gcs-deep-storage,hadoop-gcs-to-hdfs-deep-storage,aliyun-oss-deep-storage,append-ingestion,compaction,high-availability,upgrade,shuffle-deep-store,custom-coordinator-duties
+          use_indexer: ${{ matrix.indexer }}
+
+# Needs:
+# MYSQL_DRIVER_CLASSNAME='org.mariadb.jdbc.Driver'
+# k8s tests
+# security_vulnerabilities
+
+
+#  integration-batch-index:
+#    needs: build
+#    uses: imply-elliott/druid/.github/workflows/standard_its.yml@github-actions-its
+#    with:
+#      runtime_jdk: 8
+#      testing_groups: -Dgroups=batch-index
+#      use_indexer: middleManager
+#
+#  integration-input-format:
+#    needs: build
+#    uses: imply-elliott/druid/.github/workflows/standard_its.yml@github-actions-its
+#    with:
+#      runtime_jdk: 8
+#      testing_groups: -Dgroups=input-format
+#      use_indexer: middleManager
+#
+#  integration_perfect_rollup_parallel_batch_index:
+#    needs: build
+#    uses: imply-elliott/druid/.github/workflows/standard_its.yml@github-actions-its
+#    with:
+#      runtime_jdk: 8
+#      testing_groups: -Dgroups=perfect-rollup-parallel-batch-index
+#      use_indexer: middleManager
+#
+#  integration_kafka_index:
+#    needs: build
+#    uses: imply-elliott/druid/.github/workflows/standard_its.yml@github-actions-its
+#    with:
+#      runtime_jdk: 8
+#      testing_groups: -Dgroups=kafka-index
+#      use_indexer: middleManager
