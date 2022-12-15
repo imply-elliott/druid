@@ -19,7 +19,7 @@ on:
     branches:
       - master
       - /^\d+\.\d+\.\d+(-\S*)?$/ # release branches
-      - 'github-actions-**'
+      #- 'github-actions-**'
   pull_request:
     branches:
       - master
@@ -52,8 +52,36 @@ jobs:
 
   leadership-and-high-availability:
     needs: build
-    uses: imply-elliott/druid/.github/workflows/standard_its.yml@github-actions-its
+    uses: imply-elliott/druid/.github/workflows/revised_its.yml@github-actions-its
     with:
       compile_jdk: 8
       runtime_jdk: 8
-      maven_projects: processing
+      use_indexer: middleManager
+      script: ./it.sh github HighAvailability
+
+  multi-stage-query:
+    needs: build
+    uses: imply-elliott/druid/.github/workflows/revised_its.yml@github-actions-its
+    with:
+      compile_jdk: 8
+      runtime_jdk: 8
+      use_indexer: middleManager
+      script: ./it.sh github MultiStageQuery
+
+  catalog-integration:
+    needs: build
+    uses: imply-elliott/druid/.github/workflows/revised_its.yml@github-actions-its
+    with:
+      compile_jdk: 8
+      runtime_jdk: 8
+      use_indexer: middleManager
+      script: ./it.sh github Catalog
+
+  batch-index-with-indexer:
+    needs: build
+    uses: imply-elliott/druid/.github/workflows/revised_its.yml@github-actions-its
+    with:
+      compile_jdk: 8
+      runtime_jdk: 8
+      use_indexer: indexer
+      script: ./it.sh github BatchIndex
