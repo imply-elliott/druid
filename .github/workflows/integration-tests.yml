@@ -94,7 +94,7 @@ jobs:
     strategy:
       matrix:
         jdk: [8, 11, 17]
-        sqlcompat: [true, false]
+        sqlcompat: ['true', 'false']
     needs: build-jdk${{ matrix.jdk }}
     uses: imply-elliott/druid/.github/workflows/test-processing-module.yml@github-actions-its
     with:
