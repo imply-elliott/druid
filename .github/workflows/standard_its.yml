@@ -31,7 +31,10 @@ on:
       testing_groups:
         required: true
         type: string
-
+      build_jdk:
+        description: 'Which jdk version was used to build'
+        required: true
+        type: string
 env:
   MVN: mvn -B
   MAVEN_SKIP: -P skip-static-checks -Dweb.console.skip=true -Dmaven.javadoc.skip=true
@@ -55,7 +58,7 @@ jobs:
           cache: 'maven'
       - uses: actions/download-artifact@v3
         with:
-          name: druid
+          name: druid-jdk${{ inputs.build_jdk }}
           path: distribution/target
       - name: Run IT
         run: ${MVN} verify -pl integration-tests -P integration-tests ${TESTNG_GROUPS} ${JVM_RUNTIME} -Dit.indexer=${USE_INDEXER} ${MAVEN_SKIP} -Doverride.config.path=${OVERRIDE_CONFIG_PATH}
