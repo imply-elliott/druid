@@ -30,6 +30,10 @@ on:
         description: 'Which JDK version to use at runtime'
         required: true
         type: string
+      build_jdk:
+        description: 'Which jdk version was used to build'
+        required: true
+        type: string
 
 env:
   MVN: mvn -B
@@ -52,6 +56,10 @@ jobs:
           distribution: 'zulu'
           java-version: ${{ inputs.runtime_jdk }}
           cache: 'maven'
+      - uses: actions/download-artifact@v3
+        with:
+          name: druid-jdk${{ inputs.build_jdk }}
+          path: distribution/target
       - name: Run IT
         run: |
           set -e
