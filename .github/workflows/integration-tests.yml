@@ -54,6 +54,5 @@ jobs:
     needs: build
     uses: imply-elliott/druid/.github/workflows/test-processing-module.yml@github-actions-its
     with:
-      compile_jdk: 8
       runtime_jdk: 8
       maven_projects: processing
