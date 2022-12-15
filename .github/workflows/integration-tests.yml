@@ -30,7 +30,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build:
+  build-jdk8:
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout branch
@@ -47,43 +47,104 @@ jobs:
           ./it.sh dist
       - uses: actions/upload-artifact@v3
         with:
-          name: druid
+          name: druid-jdk8
+          path: distribution/target/apache-druid-*-bin.tar.gz
+
+  build-jdk11:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v3
+      - name: Setup java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: 8
+          cache: 'maven'
+      - name: Maven build
+        run: |
+          ./it.sh build &&
+          ./it.sh dist
+      - uses: actions/upload-artifact@v3
+        with:
+          name: druid-jdk11
+          path: distribution/target/apache-druid-*-bin.tar.gz
+
+  build-jdk17:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v3
+      - name: Setup java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: 8
+          cache: 'maven'
+      - name: Maven build
+        run: |
+          ./it.sh build &&
+          ./it.sh dist
+      - uses: actions/upload-artifact@v3
+        with:
+          name: druid-jdk17
           path: distribution/target/apache-druid-*-bin.tar.gz
 
   processing-module:
-    needs: build
+    strategy:
+      matrix:
+        jdk: [8, 11, 17]
+        sqlcompat: [true, false]
+    needs: build-jdk${{ matrix.jdk }}
     uses: imply-elliott/druid/.github/workflows/test-processing-module.yml@github-actions-its
     with:
-      runtime_jdk: 8
+      build_jdk: ${{ matrix.jdk }}
+      runtime_jdk: ${{ matrix.jdk }}
       maven_projects: processing
+      druid_use_default_value_for_null: ${{ matrix.sqlcompat }}
 
-  processing-module-sqlcompat:
-    needs: build
-    uses: imply-elliott/druid/.github/workflows/test-processing-module.yml@github-actions-its
-    with:
-      runtime_jdk: 8
-      maven_projects: processing
-      druid_use_default_value_for_null: false
+#  processing-module-sqlcompat:
+#    strategy:
+#      matrix:
+#        jdk: [8, 11, 17]
+#    needs: build-jdk${{ matrix.jdk }}
+#    uses: imply-elliott/druid/.github/workflows/test-processing-module.yml@github-actions-its
+#    with:
+#      build_jdk: ${{ matrix.jdk }}
+#      runtime_jdk: ${{ matrix.jdk }}
+#      maven_projects: processing
+#      druid_use_default_value_for_null: false
 
   indexing-module:
-    needs: build
+    strategy:
+      matrix:
+        jdk: [8, 11, 17]
+    needs: build-jdk${{ matrix.jdk }}
     uses: imply-elliott/druid/.github/workflows/test-processing-module.yml@github-actions-its
     with:
-      runtime_jdk: 8
+      build_jdk: ${{ matrix.jdk }}
+      runtime_jdk: ${{ matrix.jdk }}
       maven_projects: 'indexing-hadoop,indexing-service,extensions-core/kafka-indexing-service,extensions-core/kinesis-indexing-service'
 
   server-module:
-    needs: build
+    strategy:
+      matrix:
+        jdk: [8, 11, 17]
+    needs: build-jdk${{ matrix.jdk }}
     uses: imply-elliott/druid/.github/workflows/test-processing-module.yml@github-actions-its
     with:
       runtime_jdk: 8
       maven_projects: server
 
   other-modules:
-    needs: build
+    strategy:
+      matrix:
+        jdk: [8, 11, 17]
+    needs: build-jdk${{ matrix.jdk }}
     uses: imply-elliott/druid/.github/workflows/test-processing-module.yml@github-actions-its
     with:
-      runtime_jdk: 8
+      build_jdk: ${{ matrix.jdk }}
+      runtime_jdk: ${{ matrix.jdk }}
       maven_projects: '!processing,!indexing-hadoop,!indexing-service,!extensions-core/kafka-indexing-service,!extensions-core/kinesis-indexing-service,!server,!web-console,!integration-tests,!:druid-it-tools,!:druid-it-image,!:druid-it-cases'
 
   integration-tests-middleManager:
@@ -93,7 +154,8 @@ jobs:
     needs: build
     uses: imply-elliott/druid/.github/workflows/standard_its.yml@github-actions-its
     with:
-      runtime_jdk: 8
+      build_jdk: ${{ matrix.jdk }}
+      runtime_jdk: ${{ matrix.jdk }}
       testing_groups: -Dgroups=${{ matrix.testing_group }}
       use_indexer: middleManager
 
