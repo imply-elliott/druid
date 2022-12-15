@@ -24,7 +24,7 @@ on:
       druid_use_default_value_for_null:
         required: false
         type: boolean
-        default: 'true'
+        default: true
       script:
         description: 'Which IT script to run'
         required: true
