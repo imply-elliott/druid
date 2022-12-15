@@ -95,7 +95,7 @@ jobs:
       matrix:
         jdk: [8, 11, 17]
         sqlcompat: [true, false]
-    needs: build-jdk${{ matrix.jdk }}
+    needs: [build-jdk8, build-jdk11, build-jdk17]
     uses: imply-elliott/druid/.github/workflows/test-processing-module.yml@github-actions-its
     with:
       build_jdk: ${{ matrix.jdk }}
