@@ -35,7 +35,7 @@ env:
   MVN: mvn -B
   MAVEN_SKIP: -P skip-static-checks -Dweb.console.skip=true -Dmaven.javadoc.skip=true
   MAVEN_SKIP_TESTS: -P skip-tests
-  MAVEN_OPTS: -Xmx3000m
+  MAVEN_OPTS: -Xmx2048m
   MAVEN_PROJECTS: ${{ inputs.maven_projects }}
   JVM_RUNTIME: -Djvm.runtime=${{ inputs.runtime_jdk }}
   DRUID_USE_DEFAULT_VALUE_FOR_NULL: ${{ inputs.druid_use_default_value_for_null }}
