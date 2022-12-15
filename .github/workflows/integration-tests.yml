@@ -94,7 +94,7 @@ jobs:
     strategy:
       matrix:
         jdk: [8, 11, 17]
-        sqlcompat: ['true', 'false']
+        sqlcompat: [true, false]
     needs: build-jdk${{ matrix.jdk }}
     uses: imply-elliott/druid/.github/workflows/test-processing-module.yml@github-actions-its
     with:
@@ -119,7 +119,7 @@ jobs:
     strategy:
       matrix:
         jdk: [8, 11, 17]
-    needs: build-jdk${{ matrix.jdk }}
+    needs: [build-jdk8, build-jdk11, build-jdk17]
     uses: imply-elliott/druid/.github/workflows/test-processing-module.yml@github-actions-its
     with:
       build_jdk: ${{ matrix.jdk }}
@@ -130,7 +130,7 @@ jobs:
     strategy:
       matrix:
         jdk: [8, 11, 17]
-    needs: build-jdk${{ matrix.jdk }}
+    needs: [build-jdk8, build-jdk11, build-jdk17]
     uses: imply-elliott/druid/.github/workflows/test-processing-module.yml@github-actions-its
     with:
       runtime_jdk: 8
@@ -140,7 +140,7 @@ jobs:
     strategy:
       matrix:
         jdk: [8, 11, 17]
-    needs: build-jdk${{ matrix.jdk }}
+    needs: [build-jdk8, build-jdk11, build-jdk17]
     uses: imply-elliott/druid/.github/workflows/test-processing-module.yml@github-actions-its
     with:
       build_jdk: ${{ matrix.jdk }}
@@ -151,7 +151,7 @@ jobs:
     strategy:
       matrix:
         testing_group: [batch-index, input-format, input-source, perfect-rollup-parallel-batch-index, kafka-index, shuffle-deep-store, kafka-index, custom-coordinator-duties, kafka-index-slow, kafka-transactional-index, kafka-transactional-index-slow, kafka-data-format, ldap-security, realtime-index, append-ingestion, compaction]
-    needs: build
+    needs: [build-jdk8, build-jdk11, build-jdk17]
     uses: imply-elliott/druid/.github/workflows/standard_its.yml@github-actions-its
     with:
       build_jdk: ${{ matrix.jdk }}
@@ -163,7 +163,7 @@ jobs:
     strategy:
       matrix:
         testing_group: [query, query-retry, query-error, security]
-    needs: build
+    needs: [build-jdk8, build-jdk11, build-jdk17]
     uses: imply-elliott/druid/.github/workflows/standard_its.yml@github-actions-its
     with:
       runtime_jdk: 8
@@ -175,7 +175,7 @@ jobs:
     strategy:
       matrix:
         indexer: [middleManager, indexer]
-    needs: build
+    needs: [build-jdk8, build-jdk11, build-jdk17]
     uses: imply-elliott/druid/.github/workflows/standard_its.yml@github-actions-its
     with:
       runtime_jdk: 8
