@@ -17,10 +17,6 @@ name: Revised Integration Tests shared workflow
 on:
   workflow_call:
     inputs:
-      script:
-        description: 'Which IT script to run'
-        required: true
-        type: string
       runtime_jdk:
         description: 'Which JDK version to use at runtime'
         required: true
@@ -31,6 +27,9 @@ on:
         type: string
       override_config_path:
         required: false
+        type: string
+      testing_groups:
+        required: true
         type: string
 
 env:
@@ -59,4 +58,4 @@ jobs:
           name: druid
           path: distribution/target
       - name: Run IT
-        run: ${{ inputs.script }}
+        run: ${MVN} verify -pl integration-tests -P integration-tests ${TESTNG_GROUPS} ${JVM_RUNTIME} -Dit.indexer=${USE_INDEXER} ${MAVEN_SKIP} -Doverride.config.path=${OVERRIDE_CONFIG_PATH}
