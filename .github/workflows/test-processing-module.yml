@@ -25,10 +25,6 @@ on:
         required: false
         type: boolean
         default: true
-      compile_jdk:
-        description: 'Which JDK version to compile with'
-        required: true
-        type: string
       runtime_jdk:
         description: 'Which JDK version to use at runtime'
         required: true
@@ -39,8 +35,8 @@ env:
   MAVEN_SKIP: -P skip-static-checks -Dweb.console.skip=true -Dmaven.javadoc.skip=true
   MAVEN_SKIP_TESTS: -P skip-tests
   MAVEN_OPTS: -Xmx3000m
+  MAVEN_PROJECTS: ${{ inputs.maven_projects }}
   JVM_RUNTIME: -Djvm.runtime=${{ inputs.runtime_jdk }}
-  USE_INDEXER: ${{ inputs.use_indexer }}
   DRUID_USE_DEFAULT_VALUE_FOR_NULL: ${{ inputs.druid_use_default_value_for_null }}
 
 jobs:
@@ -53,14 +49,14 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
-          java-version: ${{ inputs.compile_jdk }}
+          java-version: ${{ inputs.runtime_jdk }}
           cache: 'maven'
       - name: Run IT
         run: |
           unset _JAVA_OPTIONS
           # Set MAVEN_OPTS for Surefire launcher. Skip remoteresources to avoid intermittent connection timeouts when
           # resolving the SIGAR dependency.
-          ${MVN} test -pl ${{ inputs.maven_projects }} ${MAVEN_SKIP} -Dremoteresources.skip=true -Ddruid.generic.useDefaultValueForNull=${{ inputs.druid_use_default_value_for_null }}
+          ${MVN} test -pl ${MAVEN_PROJECTS} ${MAVEN_SKIP} -Dremoteresources.skip=true -Ddruid.generic.useDefaultValueForNull=${DRUID_USE_DEFAULT_VALUE_FOR_NULL}
           sh -c "dmesg | egrep -i '(oom|out of memory|kill process|killed).*' -C 1 || exit 0"
           free -m
           ${MVN} -pl ${MAVEN_PROJECTS} jacoco:report

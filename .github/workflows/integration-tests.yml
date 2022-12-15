@@ -50,9 +50,9 @@ jobs:
           name: druid
           path: distribution/target/apache-druid-*-bin.tar.gz
 
-  leadership-and-high-availability:
+  processing-module-test:
     needs: build
-    uses: imply-elliott/druid/.github/workflows/standard_its.yml@github-actions-its
+    uses: imply-elliott/druid/.github/workflows/test-processing-module.yml@github-actions-its
     with:
       compile_jdk: 8
       runtime_jdk: 8
