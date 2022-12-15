@@ -13,24 +13,37 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-name: Revised Integration Tests CI
+name: Revised Integration Tests shared workflow
 on:
-  push:
-    branches:
-      - master
-      - /^\d+\.\d+\.\d+(-\S*)?$/ # release branches
-      - 'github-actions-**'
-  pull_request:
-    branches:
-      - master
-      - /^\d+\.\d+\.\d+(-\S*)?$/ # release branches
+  workflow_call:
+    inputs:
+      script:
+        description: 'Which IT script to run'
+        required: true
+        type: string
+      runtime_jdk:
+        description: 'Which JDK version to use at runtime'
+        required: true
+        type: string
+      use_indexer:
+        description: 'Which indexer to use'
+        required: true
+        type: string
+      override_config_path:
+        required: false
+        type: string
 
-concurrency:
-  group: '${{ github.workflow }} @ ${{ github.event.pull_request.head.label || github.head_ref || github.ref }}'
-  cancel-in-progress: true
+env:
+  MVN: mvn -B
+  MAVEN_SKIP: -P skip-static-checks -Dweb.console.skip=true -Dmaven.javadoc.skip=true
+  MAVEN_SKIP_TESTS: -P skip-tests
+  MAVEN_OPTS: -Xmx3000m
+  JVM_RUNTIME: -Djvm.runtime=${{ inputs.runtime_jdk }}
+  USE_INDEXER: ${{ inputs.use_indexer }}
+  OVERRIDE_CONFIG_PATH: ${{ inputs.override_config_path }}
 
 jobs:
-  build:
+  run-it:
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout branch
@@ -39,28 +52,11 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
-          java-version: 8
+          java-version: ${{ inputs.runtime_jdk }}
           cache: 'maven'
-      - name: Maven build
-        run: |
-          ./it.sh build &&
-          ./it.sh dist
-      - uses: actions/upload-artifact@v3
+      - uses: actions/download-artifact@v3
         with:
           name: druid
-          path: distribution/target/apache-druid-*-bin.tar.gz
-
-  processing-module-test:
-    needs: build
-    uses: imply-elliott/druid/.github/workflows/test-processing-module.yml@github-actions-its
-    with:
-      runtime_jdk: 8
-      maven_projects: processing
-
-  batch-index:
-    needs: build
-    uses: imply-elliott/druid/.github/workflows/standard_its.yml@github-actions-its
-    with:
-      runtime_jdk: 8
-      testing_groups: -Dgroups=batch-index
-      use_indexer: middleManager
+          path: distribution/target
+      - name: Run IT
+        run: ${{ inputs.script }}
