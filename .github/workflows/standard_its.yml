@@ -36,7 +36,8 @@ env:
   MVN: mvn -B
   MAVEN_SKIP: -P skip-static-checks -Dweb.console.skip=true -Dmaven.javadoc.skip=true
   MAVEN_SKIP_TESTS: -P skip-tests
-  MAVEN_OPTS: -Xmx3000m
+  MAVEN_OPTS: -Xmx3000m'
+  DOCKER_IP: 127.0.0.1  # for integration tests
   JVM_RUNTIME: -Djvm.runtime=${{ inputs.runtime_jdk }}
   USE_INDEXER: ${{ inputs.use_indexer }}
   OVERRIDE_CONFIG_PATH: ${{ inputs.override_config_path }}

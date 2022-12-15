@@ -50,12 +50,41 @@ jobs:
           name: druid
           path: distribution/target/apache-druid-*-bin.tar.gz
 
-  processing-module-test:
+  processing-module:
     needs: build
     uses: imply-elliott/druid/.github/workflows/test-processing-module.yml@github-actions-its
     with:
       runtime_jdk: 8
       maven_projects: processing
+
+  processing-module-sqlcompat:
+    needs: build
+    uses: imply-elliott/druid/.github/workflows/test-processing-module.yml@github-actions-its
+    with:
+      runtime_jdk: 8
+      maven_projects: processing
+      druid_use_default_value_for_null: false
+
+  indexing-module:
+    needs: build
+    uses: imply-elliott/druid/.github/workflows/test-processing-module.yml@github-actions-its
+    with:
+      runtime_jdk: 8
+      maven_projects: 'indexing-hadoop,indexing-service,extensions-core/kafka-indexing-service,extensions-core/kinesis-indexing-service'
+
+  server-module:
+    needs: build
+    uses: imply-elliott/druid/.github/workflows/test-processing-module.yml@github-actions-its
+    with:
+      runtime_jdk: 8
+      maven_projects: server
+
+  other-modules:
+    needs: build
+    uses: imply-elliott/druid/.github/workflows/test-processing-module.yml@github-actions-its
+    with:
+      runtime_jdk: 8
+      maven_projects: '!processing,!indexing-hadoop,!indexing-service,!extensions-core/kafka-indexing-service,!extensions-core/kinesis-indexing-service,!server,!web-console,!integration-tests,!:druid-it-tools,!:druid-it-image,!:druid-it-cases'
 
   batch-index:
     needs: build

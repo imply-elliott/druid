@@ -25,6 +25,7 @@ on:
         required: false
         type: boolean
         default: true
+        description: 'For SQL compatibility'
       runtime_jdk:
         description: 'Which JDK version to use at runtime'
         required: true
