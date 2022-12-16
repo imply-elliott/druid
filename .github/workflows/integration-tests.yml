@@ -134,7 +134,7 @@ jobs:
     uses: imply-elliott/druid/.github/workflows/test-processing-module.yml@github-actions-its
     with:
       build_jdk: ${{ matrix.jdk }}
-      runtime_jdk: 8
+      runtime_jdk: ${{ matrix.jdk }}
       maven_projects: server
 
   other-modules:
@@ -151,12 +151,13 @@ jobs:
   integration-tests-middleManager:
     strategy:
       matrix:
+        jdk: [8, 11]
         testing_group: [batch-index, input-format, input-source, perfect-rollup-parallel-batch-index, kafka-index, shuffle-deep-store, kafka-index, custom-coordinator-duties, kafka-index-slow, kafka-transactional-index, kafka-transactional-index-slow, kafka-data-format, ldap-security, realtime-index, append-ingestion, compaction]
-    needs: [build-jdk8, build-jdk11, build-jdk17]
+    needs: build-jdk8
     uses: imply-elliott/druid/.github/workflows/standard_its.yml@github-actions-its
     with:
       build_jdk: 8
-      runtime_jdk: 8
+      runtime_jdk: ${{ matrix.jdk }}
       testing_groups: -Dgroups=${{ matrix.testing_group }}
       use_indexer: middleManager
 

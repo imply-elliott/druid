@@ -50,38 +50,62 @@ jobs:
           name: druid
           path: distribution/target/apache-druid-*-bin.tar.gz
 
-  leadership-and-high-availability:
+  it-middleManager:
+    strategy:
+      matrix:
+        it: [HighAvailability, MultiStageQuery, Catalog]
     needs: build
     uses: imply-elliott/druid/.github/workflows/revised_its.yml@github-actions-its
     with:
       compile_jdk: 8
       runtime_jdk: 8
       use_indexer: middleManager
-      script: ./it.sh github HighAvailability
+      script: ./it.sh github ${{ matrix.it }}
 
-  multi-stage-query:
+  it-indexer:
+    strategy:
+      matrix:
+        it: [BatchIndex]
     needs: build
     uses: imply-elliott/druid/.github/workflows/revised_its.yml@github-actions-its
     with:
       compile_jdk: 8
       runtime_jdk: 8
       use_indexer: middleManager
-      script: ./it.sh github MultiStageQuery
+      script: ./it.sh github ${{ matrix.it }}
 
-  catalog-integration:
-    needs: build
-    uses: imply-elliott/druid/.github/workflows/revised_its.yml@github-actions-its
-    with:
-      compile_jdk: 8
-      runtime_jdk: 8
-      use_indexer: middleManager
-      script: ./it.sh github Catalog
-
-  batch-index-with-indexer:
-    needs: build
-    uses: imply-elliott/druid/.github/workflows/revised_its.yml@github-actions-its
-    with:
-      compile_jdk: 8
-      runtime_jdk: 8
-      use_indexer: indexer
-      script: ./it.sh github BatchIndex
+#  leadership-and-high-availability:
+#    needs: build
+#    uses: imply-elliott/druid/.github/workflows/revised_its.yml@github-actions-its
+#    with:
+#      compile_jdk: 8
+#      runtime_jdk: 8
+#      use_indexer: middleManager
+#      script: ./it.sh github HighAvailability
+#
+#  multi-stage-query:
+#    needs: build
+#    uses: imply-elliott/druid/.github/workflows/revised_its.yml@github-actions-its
+#    with:
+#      compile_jdk: 8
+#      runtime_jdk: 8
+#      use_indexer: middleManager
+#      script: ./it.sh github MultiStageQuery
+#
+#  catalog-integration:
+#    needs: build
+#    uses: imply-elliott/druid/.github/workflows/revised_its.yml@github-actions-its
+#    with:
+#      compile_jdk: 8
+#      runtime_jdk: 8
+#      use_indexer: middleManager
+#      script: ./it.sh github Catalog
+#
+#  batch-index-with-indexer:
+#    needs: build
+#    uses: imply-elliott/druid/.github/workflows/revised_its.yml@github-actions-its
+#    with:
+#      compile_jdk: 8
+#      runtime_jdk: 8
+#      use_indexer: indexer
+#      script: ./it.sh github BatchIndex
