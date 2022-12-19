@@ -55,7 +55,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: ${{ inputs.runtime_jdk }}
-          cache: 'maven-${{ inputs.runtime_jdk }}'
+          cache: 'maven'
       - uses: actions/download-artifact@v3
         with:
           name: druid-jdk${{ inputs.build_jdk }}

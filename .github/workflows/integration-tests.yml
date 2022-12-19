@@ -46,7 +46,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: 8
-          cache: 'maven-jdk8'
+          cache: 'maven'
       - name: Maven build
         run: |
           echo 'Running Maven install...' && MAVEN_OPTS='-Xmx3000m' ${MVN} clean install -q -ff -pl '!distribution,!:druid-it-image,!:druid-it-cases' ${MAVEN_SKIP} ${MAVEN_SKIP_TESTS} -T1C && ${MVN} install -q -ff -pl 'distribution' ${MAVEN_SKIP} ${MAVEN_SKIP_TESTS}
@@ -65,7 +65,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: 11
-          cache: 'maven-jdk11'
+          cache: 'maven-'
       - name: Maven build
         run: |
           echo 'Running Maven install...' && MAVEN_OPTS='-Xmx3000m' ${MVN} clean install -q -ff -pl '!distribution,!:druid-it-image,!:druid-it-cases' ${MAVEN_SKIP} ${MAVEN_SKIP_TESTS} -T1C && ${MVN} install -q -ff -pl 'distribution' ${MAVEN_SKIP} ${MAVEN_SKIP_TESTS}
@@ -84,7 +84,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: 17
-          cache: 'maven-jdk17'
+          cache: 'maven'
       - name: Maven build
         run: |
           echo 'Running Maven install...' && MAVEN_OPTS='-Xmx3000m' ${MVN} clean install -q -ff -pl '!distribution,!:druid-it-image,!:druid-it-cases' ${MAVEN_SKIP} ${MAVEN_SKIP_TESTS} -T1C && ${MVN} install -q -ff -pl 'distribution' ${MAVEN_SKIP} ${MAVEN_SKIP_TESTS}
