@@ -59,7 +59,8 @@ jobs:
            maven-${{ runner.os }}-
       - name: Maven build
         run: |
-          echo 'Running Maven install...' && MAVEN_OPTS='-Xmx3000m' ${MVN} clean install -q -ff -pl '!distribution,!:druid-it-image,!:druid-it-cases' ${MAVEN_SKIP} ${MAVEN_SKIP_TESTS} -T1C && ${MVN} install -q -ff -pl 'distribution' ${MAVEN_SKIP} ${MAVEN_SKIP_TESTS}
+          #echo 'Running Maven install...' && MAVEN_OPTS='-Xmx3000m' ${MVN} clean install -q -ff -pl '!distribution,!:druid-it-image,!:druid-it-cases' ${MAVEN_SKIP} ${MAVEN_SKIP_TESTS} -T1C && ${MVN} install -q -ff -pl 'distribution' ${MAVEN_SKIP} ${MAVEN_SKIP_TESTS}
+          ./it.sh build
 
   processing-module:
     strategy:
