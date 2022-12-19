@@ -32,6 +32,12 @@ concurrency:
 jobs:
   build-jdk8:
     runs-on: ubuntu-22.04
+    env:
+      DOCKER_IP: 127.0.0.1
+      MVN: mvn -B
+      # Various options to make execution of maven goals faster (e.g., mvn install)
+      MAVEN_SKIP: -P skip-static-checks -Dweb.console.skip=true -Dmaven.javadoc.skip=true
+      MAVEN_SKIP_TESTS: -P skip-tests
     steps:
       - name: Checkout branch
         uses: actions/checkout@v3
@@ -40,11 +46,10 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: 8
-          cache: 'maven'
+          cache: 'maven-jdk8'
       - name: Maven build
         run: |
-          ./it.sh build &&
-          ./it.sh dist
+          'Running Maven install...' && MAVEN_OPTS='-Xmx3000m' travis_wait 15 ${MVN} clean install -q -ff -pl '!distribution,!:druid-it-image,!:druid-it-cases' ${MAVEN_SKIP} ${MAVEN_SKIP_TESTS} -T1C && ${MVN} install -q -ff -pl 'distribution' ${MAVEN_SKIP} ${MAVEN_SKIP_TESTS}
       - uses: actions/upload-artifact@v3
         with:
           name: druid-jdk8
@@ -60,12 +65,10 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: 11
-          cache: 'maven'
+          cache: 'maven-jdk11'
       - name: Maven build
         run: |
-          ./it.sh build &&
-          ./it.sh dist
-      - uses: actions/upload-artifact@v3
+          'Running Maven install...' && MAVEN_OPTS='-Xmx3000m' travis_wait 15 ${MVN} clean install -q -ff -pl '!distribution,!:druid-it-image,!:druid-it-cases' ${MAVEN_SKIP} ${MAVEN_SKIP_TESTS} -T1C && ${MVN} install -q -ff -pl 'distribution' ${MAVEN_SKIP} ${MAVEN_SKIP_TESTS}
         with:
           name: druid-jdk11
           path: distribution/target/apache-druid-*-bin.tar.gz
@@ -80,11 +83,10 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: 17
-          cache: 'maven'
+          cache: 'maven-jdk17'
       - name: Maven build
         run: |
-          ./it.sh build &&
-          ./it.sh dist
+          'Running Maven install...' && MAVEN_OPTS='-Xmx3000m' ${MVN} clean install -q -ff -pl '!distribution,!:druid-it-image,!:druid-it-cases' ${MAVEN_SKIP} ${MAVEN_SKIP_TESTS} -T1C && ${MVN} install -q -ff -pl 'distribution' ${MAVEN_SKIP} ${MAVEN_SKIP_TESTS}
       - uses: actions/upload-artifact@v3
         with:
           name: druid-jdk17
