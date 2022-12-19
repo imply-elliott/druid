@@ -31,8 +31,9 @@ concurrency:
 
 jobs:
   build:
-    matrix:
-      jdk: ['8', '11', '17']
+    strategy:
+      matrix:
+        jdk: ['8', '11', '17']
     runs-on: ubuntu-22.04
     env:
       DOCKER_IP: 127.0.0.1
