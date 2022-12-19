@@ -59,6 +59,6 @@ jobs:
         uses: actions/cache@v3
         with:
          path: ~/.m2/repository
-         key: maven-${{ runner.os }}-${{ inputs.build_jdk }}-${{ hashFiles('**/pom.xml') }}
+         key: maven-${{ platform }}-${{ inputs.build_jdk }}-${{ hashFiles('**/pom.xml') }}
       - name: Run IT
         run: ${MVN} verify -pl integration-tests -P integration-tests ${TESTNG_GROUPS} ${JVM_RUNTIME} -Dit.indexer=${USE_INDEXER} ${MAVEN_SKIP} -Doverride.config.path=${OVERRIDE_CONFIG_PATH}
