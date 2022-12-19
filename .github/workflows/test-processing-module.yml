@@ -36,7 +36,7 @@ on:
         type: string
 
 env:
-  MVN: mvn -B -o
+  MVN: mvn --no-snapshot-updates
   MAVEN_SKIP: -P skip-static-checks -Dweb.console.skip=true -Dmaven.javadoc.skip=true
   MAVEN_SKIP_TESTS: -P skip-tests
   MAVEN_OPTS: -Xmx2048m
