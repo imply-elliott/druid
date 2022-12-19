@@ -36,7 +36,7 @@ on:
         required: true
         type: string
 env:
-  MVN: mvn
+  MVN: mvn --no-snapshot-updates
   MAVEN_SKIP: -P skip-static-checks -Dweb.console.skip=true -Dmaven.javadoc.skip=true
   MAVEN_SKIP_TESTS: -P skip-tests
   DOCKER_IP: 127.0.0.1  # for integration tests
