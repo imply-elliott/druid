@@ -186,7 +186,7 @@ jobs:
       fail-fast: false
       matrix:
         jdk: [8, 11]
-        testing_group: [batch-index, input-format, input-source, perfect-rollup-parallel-batch-index, kafka-index, shuffle-deep-store, kafka-index, custom-coordinator-duties, kafka-index-slow, kafka-transactional-index, kafka-transactional-index-slow, kafka-data-format, ldap-security, realtime-index, append-ingestion, compaction]
+        testing_group: [batch-index, input-format, input-source, perfect-rollup-parallel-batch-index, kafka-index, kafka-index-slow, kafka-transactional-index, kafka-transactional-index-slow, kafka-data-format, ldap-security, realtime-index, append-ingestion, compaction]
     name:  ${{ matrix.testing_group }} (Compile=${{ matrix.jdk }}, Run=${{ matrix.jdk }})
     needs: [processing-module, indexing-module, server-module, other-modules]
     uses: imply-elliott/druid/.github/workflows/standard_its.yml@github-actions-its
@@ -195,6 +195,21 @@ jobs:
       runtime_jdk: ${{ matrix.jdk }}
       testing_groups: -Dgroups=${{ matrix.testing_group }}
       use_indexer: middleManager
+
+  integration-tests-indexer:
+    strategy:
+      fail-fast: false
+      matrix:
+        jdk: [8, 11]
+        testing_group: [input-source, perfect-rollup-parallel-batch-index, kafka-index, kafka-transactional-index, kafka-index-slow, kafka-transactional-index-slow, kafka-data-format, append-ingestion, compaction]
+    name:  ${{ matrix.testing_group }} (Compile=${{ matrix.jdk }}, Run=${{ matrix.jdk }})
+    needs: [processing-module, indexing-module, server-module, other-modules]
+    uses: imply-elliott/druid/.github/workflows/standard_its.yml@github-actions-its
+    with:
+      build_jdk: 8
+      runtime_jdk: ${{ matrix.jdk }}
+      testing_groups: -Dgroups=${{ matrix.testing_group }}
+      use_indexer: indexer
 
   integration-query-middleManager:
     strategy:
@@ -228,12 +243,41 @@ jobs:
       mysql_driver: org.mariadb.jdbc.Driver
       override_config_path: ./environment-configs/test-groups/prepopulated-data
 
+  integration-shuffle-deep-store:
+    strategy:
+      fail-fast: false
+      matrix:
+        indexer: [indexer, middleManager]
+    name:  (Compile=openjdk8, Run=openjdk8) perfect rollup parallel batch index integration test with deep storage as intermediate store ${{ matrix.indexer }}
+    needs: [processing-module, indexing-module, server-module, other-modules]
+    uses: imply-elliott/druid/.github/workflows/standard_its.yml@github-actions-its
+    with:
+      build_jdk: 8
+      runtime_jdk: 8
+      testing_groups: -Dgroups=shuffle-deep-store
+      use_indexer: ${{ matrix.indexer }}
+      override_config_path: ./environment-configs/test-groups/shuffle-deep-store
+
+  integration-custom-coordinator-duties:
+    strategy:
+      fail-fast: false
+    name: (Compile=openjdk8, Run=openjdk8) custom coordinator duties integration test
+    needs: [processing-module, indexing-module, server-module, other-modules]
+    uses: imply-elliott/druid/.github/workflows/standard_its.yml@github-actions-its
+    with:
+      build_jdk: 8
+      runtime_jdk: 8
+      testing_groups: -Dgroups=custom-coordinator-duties
+      use_indexer: middleManager
+      override_config_path: ./environment-configs/test-groups/custom-coordinator-duties
+
   integration-other:
     strategy:
       fail-fast: false
       matrix:
         jdk: [8, 11]
         indexer: [middleManager, indexer]
+        fail-fast: false
     name:  Other integrations (Compile=${{ matrix.jdk }}, Run=${{ matrix.jdk }}, Indexer=${{ matrix.indexer }})
     needs: [processing-module, indexing-module, server-module, other-modules]
     uses: imply-elliott/druid/.github/workflows/standard_its.yml@github-actions-its
@@ -273,39 +317,4 @@ jobs:
           ${MVN} verify -pl integration-tests -P int-tests-config-file ${IT_TEST} ${MAVEN_SKIP} -Dpod.name=${POD_NAME} -Dpod.namespace=${POD_NAMESPACE} -Dbuild.druid.cluster=${BUILD_DRUID_CLUSTER}
 
 # Needs:
-# MYSQL_DRIVER_CLASSNAME='org.mariadb.jdbc.Driver'
-# k8s tests
 # security_vulnerabilities
-
-
-#  integration-batch-index:
-#    needs: build
-#    uses: imply-elliott/druid/.github/workflows/standard_its.yml@github-actions-its
-#    with:
-#      runtime_jdk: 8
-#      testing_groups: -Dgroups=batch-index
-#      use_indexer: middleManager
-#
-#  integration-input-format:
-#    needs: build
-#    uses: imply-elliott/druid/.github/workflows/standard_its.yml@github-actions-its
-#    with:
-#      runtime_jdk: 8
-#      testing_groups: -Dgroups=input-format
-#      use_indexer: middleManager
-#
-#  integration_perfect_rollup_parallel_batch_index:
-#    needs: build
-#    uses: imply-elliott/druid/.github/workflows/standard_its.yml@github-actions-its
-#    with:
-#      runtime_jdk: 8
-#      testing_groups: -Dgroups=perfect-rollup-parallel-batch-index
-#      use_indexer: middleManager
-#
-#  integration_kafka_index:
-#    needs: build
-#    uses: imply-elliott/druid/.github/workflows/standard_its.yml@github-actions-its
-#    with:
-#      runtime_jdk: 8
-#      testing_groups: -Dgroups=kafka-index
-#      use_indexer: middleManager

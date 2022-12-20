@@ -65,7 +65,7 @@ jobs:
   it-indexer:
     strategy:
       matrix:
-        it: [BatchIndex]
+        it: [BatchIndex, BatchIndex]
     needs: build
     uses: imply-elliott/druid/.github/workflows/revised_its.yml@github-actions-its
     with:
