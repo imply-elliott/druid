@@ -43,7 +43,7 @@ env:
   USE_INDEXER: ${{ inputs.use_indexer }}
 
 jobs:
-  run-it:
+  test:
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout branch
@@ -58,11 +58,5 @@ jobs:
         with:
           name: druid
           path: distribution/target
-      #- name: Maven install
-        #run: |
-        #  echo 'Running Maven install...' &&
-        #  ${MVN} clean install -q -ff -pl '!distribution,!:druid-it-image,!:druid-it-cases' ${MAVEN_SKIP} ${MAVEN_SKIP_TESTS} -T1C &&
-        #  ${MVN} install -q -ff -pl 'distribution' ${MAVEN_SKIP} ${MAVEN_SKIP_TESTS}
-
       - name: Run IT
         run: ${{ inputs.script }}

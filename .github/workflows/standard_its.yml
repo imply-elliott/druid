@@ -35,11 +35,16 @@ on:
         description: 'Which jdk version was used to build'
         required: true
         type: string
+      mysql_driver:
+        description: MySQL driver to use
+        required: false
+        type: string
 env:
   MVN: mvn --no-snapshot-updates
   MAVEN_SKIP: -P skip-static-checks -Dweb.console.skip=true -Dmaven.javadoc.skip=true
   MAVEN_SKIP_TESTS: -P skip-tests
   DOCKER_IP: 127.0.0.1  # for integration tests
+  MYSQL_DRIVER_CLASSNAME: ${{ inputs.mysql_driver }}
 
 jobs:
   test:
