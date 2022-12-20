@@ -201,7 +201,7 @@ jobs:
       use_indexer: middleManager
       override_config_path: ./environment-configs/test-groups/prepopulated-data
 
-  integration-query-middleManager-(mariaDB):
+  integration-query-middleManager-mariaDB:
     strategy:
       matrix:
         jdk: [8, 11]
