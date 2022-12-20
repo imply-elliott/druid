@@ -68,7 +68,7 @@ jobs:
     strategy:
       matrix:
         sqlcompat: [true, false]
-    name: Processing Module SQLCompat ${{ matrix.sqlcompat }}
+    name: Processing Module (SQLCompat=${{ matrix.sqlcompat }})
     needs: build
     uses: imply-elliott/druid/.github/workflows/test-processing-module.yml@github-actions-its
     with:
@@ -82,6 +82,7 @@ jobs:
       matrix:
         jdk: [11, 17]
         sqlcompat: [true, false]
+    name: Processing Module (Compile=${{ matrix.jdk }}, Run=${{ matrix.jdk }} SQLCompat=${{ matrix.sqlcompat }})
     needs: processing-module
     uses: imply-elliott/druid/.github/workflows/test-processing-module.yml@github-actions-its
     with:
@@ -94,6 +95,7 @@ jobs:
     strategy:
       matrix:
         sqlcompat: [true, false]
+    name: Indexing Module (SQLCompat=${{ matrix.sqlcompat }})
     needs: build
     uses: imply-elliott/druid/.github/workflows/test-processing-module.yml@github-actions-its
     with:
@@ -107,6 +109,7 @@ jobs:
       matrix:
         jdk: [11, 17]
         sqlcompat: [true, false]
+    name: Indexing Module (Compile=${{ matrix.jdk }}, Run=${{ matrix.jdk }} SQLCompat=${{ matrix.sqlcompat }})
     needs: indexing-module
     uses: imply-elliott/druid/.github/workflows/test-processing-module.yml@github-actions-its
     with:
@@ -119,6 +122,7 @@ jobs:
     strategy:
       matrix:
         sqlcompat: [true, false]
+    name: Server Module (SQLCompat=${{ matrix.sqlcompat }})
     needs: build
     uses: imply-elliott/druid/.github/workflows/test-processing-module.yml@github-actions-its
     with:
@@ -132,6 +136,7 @@ jobs:
       matrix:
         jdk: [11, 17]
         sqlcompat: [true, false]
+    name: Server Module (Compile=${{ matrix.jdk }}, Run=${{ matrix.jdk }} SQLCompat=${{ matrix.sqlcompat }})
     needs: server-module
     uses: imply-elliott/druid/.github/workflows/test-processing-module.yml@github-actions-its
     with:
@@ -144,6 +149,7 @@ jobs:
     strategy:
       matrix:
         sqlcompat: [true, false]
+    name: Other Modules (SQLCompat=${{ matrix.sqlcompat }})
     needs: build
     uses: imply-elliott/druid/.github/workflows/test-processing-module.yml@github-actions-its
     with:
@@ -157,6 +163,7 @@ jobs:
       matrix:
         jdk: [11, 17]
         sqlcompat: [true, false]
+    name: Other Modules (Compile=${{ matrix.jdk }}, Run=${{ matrix.jdk }} SQLCompat=${{ matrix.sqlcompat }})
     needs: other-modules
     uses: imply-elliott/druid/.github/workflows/test-processing-module.yml@github-actions-its
     with:
@@ -170,6 +177,7 @@ jobs:
       matrix:
         jdk: [8, 11]
         testing_group: [batch-index, input-format, input-source, perfect-rollup-parallel-batch-index, kafka-index, shuffle-deep-store, kafka-index, custom-coordinator-duties, kafka-index-slow, kafka-transactional-index, kafka-transactional-index-slow, kafka-data-format, ldap-security, realtime-index, append-ingestion, compaction]
+    name:  ${{ matrix.testing_group }} (Compile=${{ matrix.jdk }}, Run=${{ matrix.jdk }})
     needs: [processing-module, indexing-module, server-module, other-modules]
     uses: imply-elliott/druid/.github/workflows/standard_its.yml@github-actions-its
     with:
@@ -183,6 +191,7 @@ jobs:
       matrix:
         jdk: [8, 11]
         testing_group: [query, query-retry, query-error, security]
+    name:  ${{ matrix.testing_group }} (Compile=${{ matrix.jdk }}, Run=${{ matrix.jdk }})
     needs: [processing-module, indexing-module, server-module, other-modules]
     uses: imply-elliott/druid/.github/workflows/standard_its.yml@github-actions-its
     with:
@@ -197,6 +206,7 @@ jobs:
       matrix:
         jdk: [8, 11]
         indexer: [middleManager, indexer]
+    name:  Other integrations (Compile=${{ matrix.jdk }}, Run=${{ matrix.jdk }}, Indexer=${{ matrix.indexer }})
     needs: [processing-module, indexing-module, server-module, other-modules]
     uses: imply-elliott/druid/.github/workflows/standard_its.yml@github-actions-its
     with:

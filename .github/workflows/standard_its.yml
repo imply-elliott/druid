@@ -42,7 +42,7 @@ env:
   DOCKER_IP: 127.0.0.1  # for integration tests
 
 jobs:
-  run-it:
+  test:
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout branch

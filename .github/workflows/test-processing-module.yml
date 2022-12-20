@@ -45,7 +45,7 @@ env:
   DRUID_USE_DEFAULT_VALUE_FOR_NULL: ${{ inputs.druid_use_default_value_for_null }}
 
 jobs:
-  run-processing-module-test:
+  test:
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout branch
