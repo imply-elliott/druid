@@ -68,6 +68,7 @@ jobs:
     strategy:
       matrix:
         sqlcompat: [true, false]
+    name: Processing Module SQLCompat ${{ matrix.sqlcompat }}
     needs: build
     uses: imply-elliott/druid/.github/workflows/test-processing-module.yml@github-actions-its
     with:
