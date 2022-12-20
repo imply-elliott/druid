@@ -101,7 +101,7 @@ jobs:
       maven_projects: 'indexing-hadoop,indexing-service,extensions-core/kafka-indexing-service,extensions-core/kinesis-indexing-service'
       druid_use_default_value_for_null: ${{ matrix.sqlcompat }}
 
-indexing-module-phase2:
+  indexing-module-phase2:
     strategy:
       matrix:
         jdk: [11, 17]
