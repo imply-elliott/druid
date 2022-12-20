@@ -277,7 +277,6 @@ jobs:
       matrix:
         jdk: [8, 11]
         indexer: [middleManager, indexer]
-        fail-fast: false
     name:  Other integrations (Compile=${{ matrix.jdk }}, Run=${{ matrix.jdk }}, Indexer=${{ matrix.indexer }})
     needs: [processing-module, indexing-module, server-module, other-modules]
     uses: imply-elliott/druid/.github/workflows/standard_its.yml@github-actions-its
