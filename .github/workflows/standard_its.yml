@@ -43,7 +43,7 @@ env:
   JVM_RUNTIME: -Djvm.runtime=${{ inputs.runtime_jdk }}
   USE_INDEXER: ${{ inputs.use_indexer }}
   OVERRIDE_CONFIG_PATH: ${{ inputs.override_config_path }}
-  TESTING_GROUPS: ${{ inputs.testing_groups }}
+  TESTING_GROUPS: "${{ inputs.testing_groups }}"
 
 jobs:
   run-it:
