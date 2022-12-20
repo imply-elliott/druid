@@ -132,7 +132,7 @@ jobs:
     with:
       build_jdk: 8
       runtime_jdk: ${{ matrix.jdk }}
-      testing_groups: "-Dgroups=${{ matrix.testing_group }}"
+      testing_groups: -Dgroups=${{ matrix.testing_group }}
       use_indexer: middleManager
 
   integration-query-middleManager:

@@ -28,7 +28,6 @@ on:
       override_config_path:
         required: false
         type: string
-        default: ""
       testing_groups:
         required: true
         type: string
@@ -60,6 +59,5 @@ jobs:
          key: maven-${{ runner.os }}-${{ inputs.build_jdk }}-${{ hashFiles('**/pom.xml') }}
       - name: Run IT
         run: |
-        # Debug test command
         echo "${MVN} verify -pl integration-tests -P integration-tests ${{ inputs.testing_groups }} -Djvm.runtime=${{ inputs.runtime_jdk }} -Dit.indexer=${{ inputs.use_indexer }} ${MAVEN_SKIP} -Doverride.config.path=${{ inputs.override_config_path }}"
         ${MVN} verify -pl integration-tests -P integration-tests ${{ inputs.testing_groups }} -Djvm.runtime=${{ inputs.runtime_jdk }} -Dit.indexer=${{ inputs.use_indexer }} ${MAVEN_SKIP} -Doverride.config.path=${{ inputs.override_config_path }}
