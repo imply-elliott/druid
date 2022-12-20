@@ -67,9 +67,21 @@ jobs:
   processing-module:
     strategy:
       matrix:
-        jdk: [8, 11, 17]
         sqlcompat: [true, false]
     needs: build
+    uses: imply-elliott/druid/.github/workflows/test-processing-module.yml@github-actions-its
+    with:
+      build_jdk: 8
+      runtime_jdk: 8
+      maven_projects: processing
+      druid_use_default_value_for_null: ${{ matrix.sqlcompat }}
+
+  processing-module-phase2:
+    strategy:
+      matrix:
+        jdk: [11, 17]
+        sqlcompat: [true, false]
+    needs: processing-module
     uses: imply-elliott/druid/.github/workflows/test-processing-module.yml@github-actions-its
     with:
       build_jdk: ${{ matrix.jdk }}
@@ -77,57 +89,87 @@ jobs:
       maven_projects: processing
       druid_use_default_value_for_null: ${{ matrix.sqlcompat }}
 
-#  processing-module-sqlcompat:
-#    strategy:
-#      matrix:
-#        jdk: [8, 11, 17]
-#    needs: build-jdk${{ matrix.jdk }}
-#    uses: imply-elliott/druid/.github/workflows/test-processing-module.yml@github-actions-its
-#    with:
-#      build_jdk: ${{ matrix.jdk }}
-#      runtime_jdk: ${{ matrix.jdk }}
-#      maven_projects: processing
-#      druid_use_default_value_for_null: false
-
   indexing-module:
     strategy:
       matrix:
-        jdk: [8, 11, 17]
+        sqlcompat: [true, false]
     needs: build
+    uses: imply-elliott/druid/.github/workflows/test-processing-module.yml@github-actions-its
+    with:
+      build_jdk: 8
+      runtime_jdk: 8
+      maven_projects: 'indexing-hadoop,indexing-service,extensions-core/kafka-indexing-service,extensions-core/kinesis-indexing-service'
+      druid_use_default_value_for_null: ${{ matrix.sqlcompat }}
+
+indexing-module-phase2:
+    strategy:
+      matrix:
+        jdk: [11, 17]
+        sqlcompat: [true, false]
+    needs: indexing-module
     uses: imply-elliott/druid/.github/workflows/test-processing-module.yml@github-actions-its
     with:
       build_jdk: ${{ matrix.jdk }}
       runtime_jdk: ${{ matrix.jdk }}
       maven_projects: 'indexing-hadoop,indexing-service,extensions-core/kafka-indexing-service,extensions-core/kinesis-indexing-service'
+      druid_use_default_value_for_null: ${{ matrix.sqlcompat }}
 
   server-module:
     strategy:
       matrix:
-        jdk: [8, 11, 17]
+        sqlcompat: [true, false]
     needs: build
+    uses: imply-elliott/druid/.github/workflows/test-processing-module.yml@github-actions-its
+    with:
+      build_jdk: 8
+      runtime_jdk: 8
+      maven_projects: server
+      druid_use_default_value_for_null: ${{ matrix.sqlcompat }}
+
+  server-module-phase2:
+    strategy:
+      matrix:
+        jdk: [11, 17]
+        sqlcompat: [true, false]
+    needs: server-module
     uses: imply-elliott/druid/.github/workflows/test-processing-module.yml@github-actions-its
     with:
       build_jdk: ${{ matrix.jdk }}
       runtime_jdk: ${{ matrix.jdk }}
       maven_projects: server
+      druid_use_default_value_for_null: ${{ matrix.sqlcompat }}
 
   other-modules:
     strategy:
       matrix:
-        jdk: [8, 11, 17]
+        sqlcompat: [true, false]
     needs: build
+    uses: imply-elliott/druid/.github/workflows/test-processing-module.yml@github-actions-its
+    with:
+      build_jdk: 8
+      runtime_jdk: 8
+      maven_projects: '!processing,!indexing-hadoop,!indexing-service,!extensions-core/kafka-indexing-service,!extensions-core/kinesis-indexing-service,!server,!web-console,!integration-tests,!:druid-it-tools,!:druid-it-image,!:druid-it-cases'
+      druid_use_default_value_for_null: ${{ matrix.sqlcompat }}
+
+  other-modules-phase2:
+    strategy:
+      matrix:
+        jdk: [11, 17]
+        sqlcompat: [true, false]
+    needs: other-modules
     uses: imply-elliott/druid/.github/workflows/test-processing-module.yml@github-actions-its
     with:
       build_jdk: ${{ matrix.jdk }}
       runtime_jdk: ${{ matrix.jdk }}
       maven_projects: '!processing,!indexing-hadoop,!indexing-service,!extensions-core/kafka-indexing-service,!extensions-core/kinesis-indexing-service,!server,!web-console,!integration-tests,!:druid-it-tools,!:druid-it-image,!:druid-it-cases'
+      druid_use_default_value_for_null: ${{ matrix.sqlcompat }}
 
   integration-tests-middleManager:
     strategy:
       matrix:
         jdk: [8, 11]
         testing_group: [batch-index, input-format, input-source, perfect-rollup-parallel-batch-index, kafka-index, shuffle-deep-store, kafka-index, custom-coordinator-duties, kafka-index-slow, kafka-transactional-index, kafka-transactional-index-slow, kafka-data-format, ldap-security, realtime-index, append-ingestion, compaction]
-    needs: build
+    needs: [processing-module, indexing-module, server-module, other-modules]
     uses: imply-elliott/druid/.github/workflows/standard_its.yml@github-actions-its
     with:
       build_jdk: 8
@@ -140,7 +182,7 @@ jobs:
       matrix:
         jdk: [8, 11]
         testing_group: [query, query-retry, query-error, security]
-    needs: build
+    needs: [processing-module, indexing-module, server-module, other-modules]
     uses: imply-elliott/druid/.github/workflows/standard_its.yml@github-actions-its
     with:
       build_jdk: 8
@@ -154,7 +196,7 @@ jobs:
       matrix:
         jdk: [8, 11]
         indexer: [middleManager, indexer]
-    needs: build
+    needs: [processing-module, indexing-module, server-module, other-modules]
     uses: imply-elliott/druid/.github/workflows/standard_its.yml@github-actions-its
     with:
       build_jdk: 8
