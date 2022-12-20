@@ -32,6 +32,7 @@ concurrency:
 jobs:
   build:
     strategy:
+      fail-fast: false
       matrix:
         jdk: ['8', '11', '17']
     runs-on: ubuntu-22.04
@@ -66,9 +67,9 @@ jobs:
 
   processing-module:
     strategy:
+      fail-fast: false
       matrix:
         sqlcompat: [true, false]
-        fail-fast: false
     name: Processing Module (SQLCompat=${{ matrix.sqlcompat }})
     needs: build
     uses: imply-elliott/druid/.github/workflows/test-processing-module.yml@github-actions-its
@@ -80,10 +81,10 @@ jobs:
 
   processing-module-phase2:
     strategy:
+      fail-fast: false
       matrix:
         jdk: [11, 17]
         sqlcompat: [true, false]
-        fail-fast: false
     name: Processing Module (Compile=${{ matrix.jdk }}, Run=${{ matrix.jdk }} SQLCompat=${{ matrix.sqlcompat }})
     needs: processing-module
     uses: imply-elliott/druid/.github/workflows/test-processing-module.yml@github-actions-its
@@ -95,9 +96,9 @@ jobs:
 
   indexing-module:
     strategy:
+      fail-fast: false
       matrix:
         sqlcompat: [true, false]
-        fail-fast: false
     name: Indexing Module (SQLCompat=${{ matrix.sqlcompat }})
     needs: build
     uses: imply-elliott/druid/.github/workflows/test-processing-module.yml@github-actions-its
@@ -109,10 +110,10 @@ jobs:
 
   indexing-module-phase2:
     strategy:
+      fail-fast: false
       matrix:
         jdk: [11, 17]
         sqlcompat: [true, false]
-        fail-fast: false
     name: Indexing Module (Compile=${{ matrix.jdk }}, Run=${{ matrix.jdk }} SQLCompat=${{ matrix.sqlcompat }})
     needs: indexing-module
     uses: imply-elliott/druid/.github/workflows/test-processing-module.yml@github-actions-its
@@ -124,9 +125,9 @@ jobs:
 
   server-module:
     strategy:
+      fail-fast: false
       matrix:
         sqlcompat: [true, false]
-        fail-fast: false
     name: Server Module (SQLCompat=${{ matrix.sqlcompat }})
     needs: build
     uses: imply-elliott/druid/.github/workflows/test-processing-module.yml@github-actions-its
@@ -138,10 +139,10 @@ jobs:
 
   server-module-phase2:
     strategy:
+      fail-fast: false
       matrix:
         jdk: [11, 17]
         sqlcompat: [true, false]
-        fail-fast: false
     name: Server Module (Compile=${{ matrix.jdk }}, Run=${{ matrix.jdk }} SQLCompat=${{ matrix.sqlcompat }})
     needs: server-module
     uses: imply-elliott/druid/.github/workflows/test-processing-module.yml@github-actions-its
@@ -153,9 +154,9 @@ jobs:
 
   other-modules:
     strategy:
+      fail-fast: false
       matrix:
         sqlcompat: [true, false]
-        fail-fast: false
     name: Other Modules (SQLCompat=${{ matrix.sqlcompat }})
     needs: build
     uses: imply-elliott/druid/.github/workflows/test-processing-module.yml@github-actions-its
@@ -167,10 +168,10 @@ jobs:
 
   other-modules-phase2:
     strategy:
+      fail-fast: false
       matrix:
         jdk: [11, 17]
         sqlcompat: [true, false]
-        fail-fast: false
     name: Other Modules (Compile=${{ matrix.jdk }}, Run=${{ matrix.jdk }} SQLCompat=${{ matrix.sqlcompat }})
     needs: other-modules
     uses: imply-elliott/druid/.github/workflows/test-processing-module.yml@github-actions-its
@@ -182,10 +183,10 @@ jobs:
 
   integration-tests-middleManager:
     strategy:
+      fail-fast: false
       matrix:
         jdk: [8, 11]
         testing_group: [batch-index, input-format, input-source, perfect-rollup-parallel-batch-index, kafka-index, shuffle-deep-store, kafka-index, custom-coordinator-duties, kafka-index-slow, kafka-transactional-index, kafka-transactional-index-slow, kafka-data-format, ldap-security, realtime-index, append-ingestion, compaction]
-        fail-fast: false
     name:  ${{ matrix.testing_group }} (Compile=${{ matrix.jdk }}, Run=${{ matrix.jdk }})
     needs: [processing-module, indexing-module, server-module, other-modules]
     uses: imply-elliott/druid/.github/workflows/standard_its.yml@github-actions-its
@@ -197,10 +198,10 @@ jobs:
 
   integration-query-middleManager:
     strategy:
+      fail-fast: false
       matrix:
         jdk: [8, 11]
         testing_group: [query, query-retry, query-error, security]
-        fail-fast: false
     name:  ${{ matrix.testing_group }} (Compile=${{ matrix.jdk }}, Run=${{ matrix.jdk }})
     needs: [processing-module, indexing-module, server-module, other-modules]
     uses: imply-elliott/druid/.github/workflows/standard_its.yml@github-actions-its
@@ -213,9 +214,9 @@ jobs:
 
   integration-query-middleManager-mariaDB:
     strategy:
+      fail-fast: false
       matrix:
         jdk: [8, 11]
-        fail-fast: false
     name:  (Compile=8, Run=${{ matrix.jdk }}) query integration test (mariaDB)
     needs: [processing-module, indexing-module, server-module, other-modules]
     uses: imply-elliott/druid/.github/workflows/standard_its.yml@github-actions-its
@@ -229,10 +230,10 @@ jobs:
 
   integration-other:
     strategy:
+      fail-fast: false
       matrix:
         jdk: [8, 11]
         indexer: [middleManager, indexer]
-        fail-fast: false
     name:  Other integrations (Compile=${{ matrix.jdk }}, Run=${{ matrix.jdk }}, Indexer=${{ matrix.indexer }})
     needs: [processing-module, indexing-module, server-module, other-modules]
     uses: imply-elliott/druid/.github/workflows/standard_its.yml@github-actions-its
