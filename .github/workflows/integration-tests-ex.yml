@@ -19,7 +19,7 @@ on:
     branches:
       - master
       - /^\d+\.\d+\.\d+(-\S*)?$/ # release branches
-      #- 'github-actions-**'
+      - 'github-actions-**'
   pull_request:
     branches:
       - master
@@ -43,35 +43,25 @@ jobs:
           cache: 'maven'
       - name: Maven build
         run: |
-          ./it.sh build &&
+          ./it.sh ci &&
           ./it.sh dist
       - uses: actions/upload-artifact@v3
         with:
           name: druid
           path: distribution/target/apache-druid-*-bin.tar.gz
 
-  it-middleManager:
+  it:
     strategy:
       matrix:
-        it: [HighAvailability, MultiStageQuery, Catalog]
+        jdk: [8, 11, 17]
+        it: [HighAvailability, MultiStageQuery, Catalog, BatchIndex]
+        indexer: [indexer, middleManager]
     needs: build
     uses: imply-elliott/druid/.github/workflows/revised_its.yml@github-actions-its
     with:
-      compile_jdk: 8
-      runtime_jdk: 8
-      use_indexer: middleManager
-      script: ./it.sh github ${{ matrix.it }}
-
-  it-indexer:
-    strategy:
-      matrix:
-        it: [BatchIndex, BatchIndex]
-    needs: build
-    uses: imply-elliott/druid/.github/workflows/revised_its.yml@github-actions-its
-    with:
-      compile_jdk: 8
-      runtime_jdk: 8
-      use_indexer: middleManager
+      compile_jdk: ${{ matrix.jdk }}
+      runtime_jdk: ${{ matrix.jdk }}
+      use_indexer: ${{ matrix.indexer }}
       script: ./it.sh github ${{ matrix.it }}
 
 #  leadership-and-high-availability:

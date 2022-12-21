@@ -71,7 +71,7 @@ case $CMD in
     usage
     ;;
   "ci" )
-    mvn clean package dependency:go-offline -P dist $MAVEN_IGNORE -T1.0C
+    mvn clean package dependency:resolve dependency:go-offline -P dist $MAVEN_IGNORE -T1.0C
     ;;
   "build" )
     mvn clean package -P dist $MAVEN_IGNORE -T1.0C
@@ -109,6 +109,16 @@ case $CMD in
     fi
     cd $DRUID_DEV/integration-tests-ex/cases
     mvn verify -P skip-static-checks,docker-tests,IT-$1 \
+            -Dmaven.javadoc.skip=true -DskipUTs=true \
+            -pl :druid-it-cases
+    ;;
+  "testi-offline" )
+    if [ -z "$1" ]; then
+      usage
+      exit 1
+    fi
+    cd $DRUID_DEV/integration-tests-ex/cases
+    mvn -o verify -P skip-static-checks,docker-tests,IT-$1 \
             -Dmaven.javadoc.skip=true -DskipUTs=true \
             -pl :druid-it-cases
     ;;
