@@ -36,7 +36,7 @@ jobs:
       matrix:
         jdk: ['8', '11', '17']
     runs-on: ubuntu-22.04
-    env:
+    #env:
       #DOCKER_IP: 127.0.0.1
       #MVN: mvn -B
       # Various options to make execution of maven goals faster (e.g., mvn install)
