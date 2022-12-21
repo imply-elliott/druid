@@ -21,10 +21,10 @@ jobs:
     strategy:
       matrix:
         #jdk: [8, 11, 17]
-        jdk: 8
+        jdk: [8]
         it: [HighAvailability, MultiStageQuery, Catalog, BatchIndex]
         #indexer: [indexer, middleManager]
-        indexer: indexer
+        indexer: [indexer]
     uses: imply-elliott/druid/.github/workflows/revised_its.yml@github-actions-its
     with:
       build_jdk: ${{ matrix.jdk }}
