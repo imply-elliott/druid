@@ -44,8 +44,8 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: ${{ matrix.jdk }}
-      - name: Cache local Maven repository
-        id: cache
+      - name: Cache Maven
+        id: maven
         uses: actions/cache@v3
         with:
          path: ~/.m2/repository
@@ -53,15 +53,34 @@ jobs:
          restore-keys: |
            maven-${{ runner.os }}-${{ matrix.jdk }}-
            maven-${{ runner.os }}-
+      - name: Cache targets
+        id: target
+        uses: actions/cache@v3
+        with:
+         path: |
+              target/
+              extendedset/target
+              hll/target
+              processing/target
+              server/target
+              indexing-hadoop/target
+              web-console/target
+              indexing-service/target
+              services/target
+              benchmarks/target
+              distribution/target
+         key: maven-${{ runner.os }}-${{ matrix.jdk }}-targets-${{ hashFiles('**/pom.xml') }}
+         restore-keys: |
+           maven-${{ runner.os }}-${{ matrix.jdk }}-targets-
+           maven-${{ runner.os }}-targets-
       - name: Maven build
-        if: steps.cache.outputs.cache-hit != 'true'
         run: |
           ./it.sh ci &&
           ./it.sh dist
-      - uses: actions/upload-artifact@v3
-        with:
-          name: druid
-          path: distribution/target/apache-druid-*-bin.tar.gz
+#      - uses: actions/upload-artifact@v3
+#        with:
+#          name: druid
+#          path: distribution/target/apache-druid-*-bin.tar.gz
 
   it:
     strategy:
