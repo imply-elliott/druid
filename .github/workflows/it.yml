@@ -51,7 +51,6 @@ jobs:
       matrix:
         sqlcompat: [true, false]
     name: Indexing Module (SQLCompat=${{ matrix.sqlcompat }})
-    needs: build
     uses: imply-elliott/druid/.github/workflows/test-processing-module.yml@github-actions-its
     with:
       build_jdk: 8
@@ -80,7 +79,6 @@ jobs:
       matrix:
         sqlcompat: [true, false]
     name: Server Module (SQLCompat=${{ matrix.sqlcompat }})
-    needs: build
     uses: imply-elliott/druid/.github/workflows/test-processing-module.yml@github-actions-its
     with:
       build_jdk: 8
@@ -109,7 +107,6 @@ jobs:
       matrix:
         sqlcompat: [true, false]
     name: Other Modules (SQLCompat=${{ matrix.sqlcompat }})
-    needs: build
     uses: imply-elliott/druid/.github/workflows/test-processing-module.yml@github-actions-its
     with:
       build_jdk: 8
