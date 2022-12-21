@@ -37,11 +37,11 @@ jobs:
         jdk: ['8', '11', '17']
     runs-on: ubuntu-22.04
     env:
-      DOCKER_IP: 127.0.0.1
-      MVN: mvn -B
+      #DOCKER_IP: 127.0.0.1
+      #MVN: mvn -B
       # Various options to make execution of maven goals faster (e.g., mvn install)
-      MAVEN_SKIP: -P skip-static-checks -Dweb.console.skip=true -Dmaven.javadoc.skip=true
-      MAVEN_SKIP_TESTS: -P skip-tests
+      #MAVEN_SKIP: -P skip-static-checks -Dweb.console.skip=true -Dmaven.javadoc.skip=true
+      #MAVEN_SKIP_TESTS: -P skip-tests
     steps:
       - name: Checkout branch
         uses: actions/checkout@v3
@@ -63,7 +63,7 @@ jobs:
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
           #echo 'Running Maven install...' && MAVEN_OPTS='-Xmx3000m' ${MVN} clean install -q -ff -pl '!distribution,!:druid-it-image,!:druid-it-cases' ${MAVEN_SKIP} ${MAVEN_SKIP_TESTS} -T1C && ${MVN} install -q -ff -pl 'distribution' ${MAVEN_SKIP} ${MAVEN_SKIP_TESTS}
-          ./it.sh build
+          ./it.sh ci
 
   processing-module:
     strategy:
