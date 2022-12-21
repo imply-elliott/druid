@@ -21,8 +21,8 @@ on:
         description: 'Which IT script to run'
         required: true
         type: string
-      compile_jdk:
-        description: 'Which JDK version to compile with'
+      build_jdk:
+        description: 'Which jdk version was used to build'
         required: true
         type: string
       runtime_jdk:
@@ -52,7 +52,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
-          java-version: ${{ inputs.compile_jdk }}
+          java-version: ${{ inputs.build_jdk }}
       - name: Restore Maven repository
         uses: actions/cache/restore@v3
         with:
