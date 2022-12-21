@@ -79,52 +79,10 @@ jobs:
           ./it.sh ci &&
           ./it.sh dist
 
-  it:
-    strategy:
-      matrix:
-        jdk: [8, 11, 17]
-        it: [HighAvailability, MultiStageQuery, Catalog, BatchIndex]
-        indexer: [indexer, middleManager]
+  its:
     needs: build
-    uses: imply-elliott/druid/.github/workflows/revised_its.yml@github-actions-its
-    with:
-      compile_jdk: ${{ matrix.jdk }}
-      runtime_jdk: ${{ matrix.jdk }}
-      use_indexer: ${{ matrix.indexer }}
-      script: ./it.sh github ${{ matrix.it }}
+    uses: imply-elliott/druid/.github/workflows/integration-tests.yml@github-actions-its
 
-#  leadership-and-high-availability:
-#    needs: build
-#    uses: imply-elliott/druid/.github/workflows/revised_its.yml@github-actions-its
-#    with:
-#      compile_jdk: 8
-#      runtime_jdk: 8
-#      use_indexer: middleManager
-#      script: ./it.sh github HighAvailability
-#
-#  multi-stage-query:
-#    needs: build
-#    uses: imply-elliott/druid/.github/workflows/revised_its.yml@github-actions-its
-#    with:
-#      compile_jdk: 8
-#      runtime_jdk: 8
-#      use_indexer: middleManager
-#      script: ./it.sh github MultiStageQuery
-#
-#  catalog-integration:
-#    needs: build
-#    uses: imply-elliott/druid/.github/workflows/revised_its.yml@github-actions-its
-#    with:
-#      compile_jdk: 8
-#      runtime_jdk: 8
-#      use_indexer: middleManager
-#      script: ./it.sh github Catalog
-#
-#  batch-index-with-indexer:
-#    needs: build
-#    uses: imply-elliott/druid/.github/workflows/revised_its.yml@github-actions-its
-#    with:
-#      compile_jdk: 8
-#      runtime_jdk: 8
-#      use_indexer: indexer
-#      script: ./it.sh github BatchIndex
+  ex:
+    needs: build
+    uses: imply-elliott/druid/.github/workflows/integration-tests-ex.yml@github-actions-its

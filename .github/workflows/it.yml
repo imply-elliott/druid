@@ -1,0 +1,267 @@
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+jobs:
+  processing-module:
+    strategy:
+      fail-fast: false
+      matrix:
+        sqlcompat: [true, false]
+    name: Processing Module (SQLCompat=${{ matrix.sqlcompat }})
+    needs: build
+    uses: imply-elliott/druid/.github/workflows/test-processing-module.yml@github-actions-its
+    with:
+      build_jdk: 8
+      runtime_jdk: 8
+      maven_projects: processing
+      druid_use_default_value_for_null: ${{ matrix.sqlcompat }}
+
+  processing-module-phase2:
+    strategy:
+      fail-fast: false
+      matrix:
+        jdk: [11, 17]
+        sqlcompat: [true, false]
+    name: Processing Module (Compile=${{ matrix.jdk }}, Run=${{ matrix.jdk }} SQLCompat=${{ matrix.sqlcompat }})
+    needs: processing-module
+    uses: imply-elliott/druid/.github/workflows/test-processing-module.yml@github-actions-its
+    with:
+      build_jdk: ${{ matrix.jdk }}
+      runtime_jdk: ${{ matrix.jdk }}
+      maven_projects: processing
+      druid_use_default_value_for_null: ${{ matrix.sqlcompat }}
+
+  indexing-module:
+    strategy:
+      fail-fast: false
+      matrix:
+        sqlcompat: [true, false]
+    name: Indexing Module (SQLCompat=${{ matrix.sqlcompat }})
+    needs: build
+    uses: imply-elliott/druid/.github/workflows/test-processing-module.yml@github-actions-its
+    with:
+      build_jdk: 8
+      runtime_jdk: 8
+      maven_projects: 'indexing-hadoop,indexing-service,extensions-core/kafka-indexing-service,extensions-core/kinesis-indexing-service'
+      druid_use_default_value_for_null: ${{ matrix.sqlcompat }}
+
+  indexing-module-phase2:
+    strategy:
+      fail-fast: false
+      matrix:
+        jdk: [11, 17]
+        sqlcompat: [true, false]
+    name: Indexing Module (Compile=${{ matrix.jdk }}, Run=${{ matrix.jdk }} SQLCompat=${{ matrix.sqlcompat }})
+    needs: indexing-module
+    uses: imply-elliott/druid/.github/workflows/test-processing-module.yml@github-actions-its
+    with:
+      build_jdk: ${{ matrix.jdk }}
+      runtime_jdk: ${{ matrix.jdk }}
+      maven_projects: 'indexing-hadoop,indexing-service,extensions-core/kafka-indexing-service,extensions-core/kinesis-indexing-service'
+      druid_use_default_value_for_null: ${{ matrix.sqlcompat }}
+
+  server-module:
+    strategy:
+      fail-fast: false
+      matrix:
+        sqlcompat: [true, false]
+    name: Server Module (SQLCompat=${{ matrix.sqlcompat }})
+    needs: build
+    uses: imply-elliott/druid/.github/workflows/test-processing-module.yml@github-actions-its
+    with:
+      build_jdk: 8
+      runtime_jdk: 8
+      maven_projects: server
+      druid_use_default_value_for_null: ${{ matrix.sqlcompat }}
+
+  server-module-phase2:
+    strategy:
+      fail-fast: false
+      matrix:
+        jdk: [11, 17]
+        sqlcompat: [true, false]
+    name: Server Module (Compile=${{ matrix.jdk }}, Run=${{ matrix.jdk }} SQLCompat=${{ matrix.sqlcompat }})
+    needs: server-module
+    uses: imply-elliott/druid/.github/workflows/test-processing-module.yml@github-actions-its
+    with:
+      build_jdk: ${{ matrix.jdk }}
+      runtime_jdk: ${{ matrix.jdk }}
+      maven_projects: server
+      druid_use_default_value_for_null: ${{ matrix.sqlcompat }}
+
+  other-modules:
+    strategy:
+      fail-fast: false
+      matrix:
+        sqlcompat: [true, false]
+    name: Other Modules (SQLCompat=${{ matrix.sqlcompat }})
+    needs: build
+    uses: imply-elliott/druid/.github/workflows/test-processing-module.yml@github-actions-its
+    with:
+      build_jdk: 8
+      runtime_jdk: 8
+      maven_projects: '!processing,!indexing-hadoop,!indexing-service,!extensions-core/kafka-indexing-service,!extensions-core/kinesis-indexing-service,!server,!web-console,!integration-tests,!:druid-it-tools,!:druid-it-image,!:druid-it-cases'
+      druid_use_default_value_for_null: ${{ matrix.sqlcompat }}
+
+  other-modules-phase2:
+    strategy:
+      fail-fast: false
+      matrix:
+        jdk: [11, 17]
+        sqlcompat: [true, false]
+    name: Other Modules (Compile=${{ matrix.jdk }}, Run=${{ matrix.jdk }} SQLCompat=${{ matrix.sqlcompat }})
+    needs: other-modules
+    uses: imply-elliott/druid/.github/workflows/test-processing-module.yml@github-actions-its
+    with:
+      build_jdk: ${{ matrix.jdk }}
+      runtime_jdk: ${{ matrix.jdk }}
+      maven_projects: '!processing,!indexing-hadoop,!indexing-service,!extensions-core/kafka-indexing-service,!extensions-core/kinesis-indexing-service,!server,!web-console,!integration-tests,!:druid-it-tools,!:druid-it-image,!:druid-it-cases'
+      druid_use_default_value_for_null: ${{ matrix.sqlcompat }}
+
+  integration-tests-middleManager:
+    strategy:
+      fail-fast: false
+      matrix:
+        jdk: [8, 11]
+        testing_group: [batch-index, input-format, input-source, perfect-rollup-parallel-batch-index, kafka-index, kafka-index-slow, kafka-transactional-index, kafka-transactional-index-slow, kafka-data-format, ldap-security, realtime-index, append-ingestion, compaction]
+    name:  ${{ matrix.testing_group }} (Compile=${{ matrix.jdk }}, Run=${{ matrix.jdk }})
+    needs: [processing-module, indexing-module, server-module, other-modules]
+    uses: imply-elliott/druid/.github/workflows/standard_its.yml@github-actions-its
+    with:
+      build_jdk: 8
+      runtime_jdk: ${{ matrix.jdk }}
+      testing_groups: -Dgroups=${{ matrix.testing_group }}
+      use_indexer: middleManager
+
+  integration-tests-indexer:
+    strategy:
+      fail-fast: false
+      matrix:
+        jdk: [8, 11]
+        testing_group: [input-source, perfect-rollup-parallel-batch-index, kafka-index, kafka-transactional-index, kafka-index-slow, kafka-transactional-index-slow, kafka-data-format, append-ingestion, compaction]
+    name:  ${{ matrix.testing_group }} (Compile=${{ matrix.jdk }}, Run=${{ matrix.jdk }})
+    needs: [processing-module, indexing-module, server-module, other-modules]
+    uses: imply-elliott/druid/.github/workflows/standard_its.yml@github-actions-its
+    with:
+      build_jdk: 8
+      runtime_jdk: ${{ matrix.jdk }}
+      testing_groups: -Dgroups=${{ matrix.testing_group }}
+      use_indexer: indexer
+
+  integration-query-middleManager:
+    strategy:
+      fail-fast: false
+      matrix:
+        jdk: [8, 11]
+        testing_group: [query, query-retry, query-error, security, high-availability]
+    name:  ${{ matrix.testing_group }} (Compile=${{ matrix.jdk }}, Run=${{ matrix.jdk }})
+    needs: [processing-module, indexing-module, server-module, other-modules]
+    uses: imply-elliott/druid/.github/workflows/standard_its.yml@github-actions-its
+    with:
+      build_jdk: 8
+      runtime_jdk: ${{ matrix.jdk }}
+      testing_groups: -Dgroups=${{ matrix.testing_group }}
+      use_indexer: middleManager
+      override_config_path: ./environment-configs/test-groups/prepopulated-data
+
+  integration-query-middleManager-mariaDB:
+    strategy:
+      fail-fast: false
+      matrix:
+        jdk: [8, 11]
+    name:  (Compile=8, Run=${{ matrix.jdk }}) query integration test (mariaDB)
+    needs: [processing-module, indexing-module, server-module, other-modules]
+    uses: imply-elliott/druid/.github/workflows/standard_its.yml@github-actions-its
+    with:
+      build_jdk: 8
+      runtime_jdk: ${{ matrix.jdk }}
+      testing_groups: -Dgroups=query
+      use_indexer: middleManager
+      mysql_driver: org.mariadb.jdbc.Driver
+      override_config_path: ./environment-configs/test-groups/prepopulated-data
+
+  integration-shuffle-deep-store:
+    strategy:
+      fail-fast: false
+      matrix:
+        indexer: [indexer, middleManager]
+    name:  (Compile=openjdk8, Run=openjdk8) perfect rollup parallel batch index integration test with deep storage as intermediate store ${{ matrix.indexer }}
+    needs: [processing-module, indexing-module, server-module, other-modules]
+    uses: imply-elliott/druid/.github/workflows/standard_its.yml@github-actions-its
+    with:
+      build_jdk: 8
+      runtime_jdk: 8
+      testing_groups: -Dgroups=shuffle-deep-store
+      use_indexer: ${{ matrix.indexer }}
+      override_config_path: ./environment-configs/test-groups/shuffle-deep-store
+
+  integration-custom-coordinator-duties:
+    name: (Compile=openjdk8, Run=openjdk8) custom coordinator duties integration test
+    needs: [processing-module, indexing-module, server-module, other-modules]
+    uses: imply-elliott/druid/.github/workflows/standard_its.yml@github-actions-its
+    with:
+      build_jdk: 8
+      runtime_jdk: 8
+      testing_groups: -Dgroups=custom-coordinator-duties
+      use_indexer: middleManager
+      override_config_path: ./environment-configs/test-groups/custom-coordinator-duties
+
+  integration-other:
+    strategy:
+      fail-fast: false
+      matrix:
+        jdk: [8, 11]
+        indexer: [middleManager, indexer]
+    name:  Other integrations (Compile=${{ matrix.jdk }}, Run=${{ matrix.jdk }}, Indexer=${{ matrix.indexer }})
+    needs: [processing-module, indexing-module, server-module, other-modules]
+    uses: imply-elliott/druid/.github/workflows/standard_its.yml@github-actions-its
+    with:
+      build_jdk: 8
+      runtime_jdk: ${{ matrix.jdk }}
+      testing_groups: -DexcludedGroups=batch-index,input-format,input-source,perfect-rollup-parallel-batch-index,kafka-index,query,query-retry,query-error,realtime-index,security,ldap-security,s3-deep-storage,gcs-deep-storage,azure-deep-storage,hdfs-deep-storage,s3-ingestion,kinesis-index,kinesis-data-format,kafka-transactional-index,kafka-index-slow,kafka-transactional-index-slow,kafka-data-format,hadoop-s3-to-s3-deep-storage,hadoop-s3-to-hdfs-deep-storage,hadoop-azure-to-azure-deep-storage,hadoop-azure-to-hdfs-deep-storage,hadoop-gcs-to-gcs-deep-storage,hadoop-gcs-to-hdfs-deep-storage,aliyun-oss-deep-storage,append-ingestion,compaction,high-availability,upgrade,shuffle-deep-store,custom-coordinator-duties
+      use_indexer: ${{ matrix.indexer }}
+
+  integration-batch_index_k8s:
+    name: (Compile=openjdk8, Run=openjdk8, Cluster Build On K8s) ITNestedQueryPushDownTest integration test
+    runs-on: ubuntu-22.04
+    env:
+      MVN: mvn --no-snapshot-updates
+      MAVEN_SKIP: -P skip-static-checks -Dweb.console.skip=true -Dmaven.javadoc.skip=true
+      CONFIG_FILE: k8s_run_config_file.json
+      IT_TEST: -Dit.test=ITNestedQueryPushDownTest
+      POD_NAME: int-test
+      POD_NAMESPACE: default
+      BUILD_DRUID_CLUSTER: true
+    needs: [processing-module, indexing-module, server-module, other-modules]
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v3
+      - name: Setup java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: 8
+      - name: Restore Maven repository
+        uses: actions/cache@v3
+        with:
+         path: ~/.m2/repository
+         key: maven-${{ runner.os }}-8-${{ hashFiles('**/pom.xml') }}
+      - name: Run IT
+        run: |
+          ${MVN} verify -pl integration-tests -P int-tests-config-file ${IT_TEST} ${MAVEN_SKIP} -Dpod.name=${POD_NAME} -Dpod.namespace=${POD_NAMESPACE} -Dbuild.druid.cluster=${BUILD_DRUID_CLUSTER}
+
+# Needs:
+# security_vulnerabilities
+# grab container logs on failure
