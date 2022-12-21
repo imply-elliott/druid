@@ -52,7 +52,6 @@ jobs:
           key: maven-${{ runner.os }}-${{ matrix.jdk }}-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             maven-${{ runner.os }}-${{ matrix.jdk }}-
-            maven-${{ runner.os }}-
       - name: Cache targets
         id: target
         uses: actions/cache@v3
