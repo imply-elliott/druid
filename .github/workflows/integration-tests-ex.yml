@@ -54,6 +54,7 @@ jobs:
            maven-${{ runner.os }}-${{ matrix.jdk }}-
            maven-${{ runner.os }}-
       - name: Maven build
+        if: steps.cache.outputs.cache-hit != 'true'
         run: |
           ./it.sh ci &&
           ./it.sh dist
