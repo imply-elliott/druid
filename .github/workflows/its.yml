@@ -73,7 +73,6 @@ jobs:
          key: maven-${{ runner.os }}-${{ matrix.jdk }}-targets-${{ hashFiles('**/pom.xml') }}
          restore-keys: |
            maven-${{ runner.os }}-${{ matrix.jdk }}-targets-
-           maven-${{ runner.os }}-targets-
       - name: Maven build
         run: |
           ./it.sh ci &&
