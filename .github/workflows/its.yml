@@ -79,7 +79,6 @@ jobs:
           ./it.sh ci &&
           ./it.sh dist
 
-jobs:
   its:
     needs: build
     uses: imply-elliott/druid/.github/workflows/it.yml@github-actions-its
