@@ -58,7 +58,7 @@ jobs:
           distribution: 'zulu'
           java-version: ${{ inputs.runtime_jdk }}
       - name: Restore Maven repository
-        uses: actions/cache@v3
+        uses: actions/cache/restore@v3
         with:
          path: ~/.m2/repository
          key: maven-${{ runner.os }}-${{ inputs.build_jdk }}-${{ hashFiles('**/pom.xml') }}
