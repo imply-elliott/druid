@@ -24,7 +24,7 @@ jobs:
         jdk: [8]
         it: [HighAvailability, MultiStageQuery, Catalog, BatchIndex]
         #indexer: [indexer, middleManager]
-        indexer: [indexer]
+        indexer: [middleManager]
     uses: imply-elliott/druid/.github/workflows/revised_its.yml@github-actions-its
     with:
       build_jdk: ${{ matrix.jdk }}
