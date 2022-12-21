@@ -69,6 +69,7 @@ jobs:
               services/target
               benchmarks/target
               distribution/target
+              integration-tests/target
          key: maven-${{ runner.os }}-${{ matrix.jdk }}-targets-${{ hashFiles('**/pom.xml') }}
          restore-keys: |
            maven-${{ runner.os }}-${{ matrix.jdk }}-targets-
