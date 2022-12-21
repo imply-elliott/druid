@@ -216,7 +216,7 @@ jobs:
       fail-fast: false
       matrix:
         jdk: [8, 11]
-        testing_group: [query, query-retry, query-error, security]
+        testing_group: [query, query-retry, query-error, security, high-availability]
     name:  ${{ matrix.testing_group }} (Compile=${{ matrix.jdk }}, Run=${{ matrix.jdk }})
     needs: [processing-module, indexing-module, server-module, other-modules]
     uses: imply-elliott/druid/.github/workflows/standard_its.yml@github-actions-its
@@ -259,8 +259,6 @@ jobs:
       override_config_path: ./environment-configs/test-groups/shuffle-deep-store
 
   integration-custom-coordinator-duties:
-    strategy:
-      fail-fast: false
     name: (Compile=openjdk8, Run=openjdk8) custom coordinator duties integration test
     needs: [processing-module, indexing-module, server-module, other-modules]
     uses: imply-elliott/druid/.github/workflows/standard_its.yml@github-actions-its
@@ -317,3 +315,4 @@ jobs:
 
 # Needs:
 # security_vulnerabilities
+# grab container logs on failure
