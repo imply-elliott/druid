@@ -81,8 +81,8 @@ jobs:
 
   its:
     needs: build
-    uses: imply-elliott/druid/.github/workflows/integration-tests.yml@github-actions-its
+    uses: imply-elliott/druid/.github/workflows/it.yml@github-actions-its
 
   ex:
     needs: build
-    uses: imply-elliott/druid/.github/workflows/integration-tests-ex.yml@github-actions-its
+    uses: imply-elliott/druid/.github/workflows/it-ex.yml@github-actions-its
