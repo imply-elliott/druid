@@ -13,17 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-name: Revised Integration Tests CI
 on:
-  push:
-    branches:
-      - master
-      - /^\d+\.\d+\.\d+(-\S*)?$/ # release branches
-      - 'github-actions-**'
-  pull_request:
-    branches:
-      - master
-      - /^\d+\.\d+\.\d+(-\S*)?$/ # release branches
+  workflow_call
 
 concurrency:
   group: '${{ github.workflow }} @ ${{ github.event.pull_request.head.label || github.head_ref || github.ref }}'
