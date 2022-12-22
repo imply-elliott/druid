@@ -19,6 +19,7 @@ on:
 jobs:
   it:
     strategy:
+      fail-fast: false
       matrix:
         #jdk: [8, 11, 17]
         jdk: [8]

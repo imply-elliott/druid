@@ -74,10 +74,10 @@ case $CMD in
     mvn --no-transfer-progress clean package dependency:resolve dependency:go-offline -P dist $MAVEN_IGNORE -T1.0C
     ;;
   "build" )
-    mvn clean package -P dist $MAVEN_IGNORE -T1.0C
+    mvn --no-transfer-progress clean package -P dist $MAVEN_IGNORE -T1.0C
     ;;
   "dist" )
-    mvn package -P dist $MAVEN_IGNORE -pl :distribution
+    mvn --no-transfer-progress package -P dist $MAVEN_IGNORE -pl :distribution
     ;;
   "tools" )
     mvn install -pl :druid-it-tools
@@ -112,7 +112,7 @@ case $CMD in
             -Dmaven.javadoc.skip=true -DskipUTs=true \
             -pl :druid-it-cases
     ;;
-  "testi-offline" )
+  "test-offline" )
     if [ -z "$1" ]; then
       usage
       exit 1
@@ -144,7 +144,7 @@ case $CMD in
       usage
       exit 1
     fi
-      $0 image
+      $0 up
       $0 test $1
       $0 tail $1
       ;;

@@ -72,10 +72,25 @@ jobs:
           key: maven-${{ runner.os }}-${{ matrix.jdk }}-targets-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             maven-${{ runner.os }}-${{ matrix.jdk }}-targets-
+      - name: Cache docker env
+        id: docker
+        uses: actions/cache@v3
+        with:
+          path: ./integration-tests-ex/image/target/env.sh
+          key: maven-${{ runner.os }}-${{ matrix.jdk }}-docker-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            maven-${{ runner.os }}-${{ matrix.jdk }}-docker-
       - name: Maven build
         run: |
           ./it.sh ci &&
-          ./it.sh dist
+          ./it.sh image
+          ./integration-tests-ex/image/target/env.sh
+          echo "DRUID_IT_IMAGE_NAME=$DRUID_IT_IMAGE_NAME" >> $GITHUB_ENV
+      - name: Upload image
+        uses: ishworkh/docker-image-artifact-upload@v1
+        with:
+          image: "${{ DRUID_IT_IMAGE_NAME }}"
+          retention_days: "2"
 
   its:
     needs: build

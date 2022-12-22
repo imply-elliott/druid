@@ -75,5 +75,15 @@ jobs:
             ./distribution/target
             ./integration-tests/target
           key: maven-${{ runner.os }}-${{ inputs.build_jdk }}-targets-${{ hashFiles('**/pom.xml') }}
+      - name: Restore docker env
+        id: docker
+        uses: actions/cache/restore@v3
+        with:
+          path: ./integration-tests-ex/image/target/env.sh
+          key: maven-${{ runner.os }}-${{ matrix.jdk }}-docker-${{ hashFiles('**/pom.xml') }}
+      - name: Download image
+        uses: ishworkh/docker-image-artifact-download@v1
+        with:
+          image: "${{ inputs.druid_it_image_name }}"
       - name: Run IT
         run: ${{ inputs.script }}
