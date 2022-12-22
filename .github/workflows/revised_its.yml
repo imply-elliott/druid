@@ -84,9 +84,17 @@ jobs:
         with:
           path: ./integration-tests-ex/image/target/env.sh
           key: maven-${{ runner.os }}-${{ matrix.jdk }}-docker-${{ hashFiles('**/pom.xml') }}
-      - name: Download image
-        uses: ishworkh/docker-image-artifact-download@v1
+      #- name: Download image
+      #  uses: ishworkh/docker-image-artifact-download@v1
+      #  with:
+      #    image: "${{ inputs.druid_it_image_name }}-jdk${{ inputs.build_jdk }}"
+      - name: Download docker image
+        uses: actions/download-artifact@v3
         with:
-          image: "${{ inputs.druid_it_image_name }}-jdk${{ inputs.build_jdk }}"
+          name: ${{ inputs.druid_it_image_name }}-jdk${{ inputs.build_jdk }}.tar.gz
+      - name: Load docker image
+        run: |
+          docker load --input ${{ inputs.druid_it_image_name }}-jdk${{ inputs.build_jdk }}.tar.gz
+          docker images
       - name: Run IT
         run: ${{ inputs.script }}
