@@ -87,6 +87,6 @@ jobs:
       - name: Download image
         uses: ishworkh/docker-image-artifact-download@v1
         with:
-          image: "${{ inputs.druid_it_image_name }}"
+          image: "${{ inputs.druid_it_image_name }}-jdk${{ matrix.jdk }}"
       - name: Run IT
         run: ${{ inputs.script }}
