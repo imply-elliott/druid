@@ -144,7 +144,6 @@ case $CMD in
       usage
       exit 1
     fi
-      $0 up
       $0 test $1
       $0 tail $1
       ;;
