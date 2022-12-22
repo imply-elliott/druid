@@ -100,3 +100,5 @@ jobs:
   ex:
     needs: build
     uses: imply-elliott/druid/.github/workflows/it-ex.yml@github-actions-its
+    with:
+      druid_it_image_name: ${{ env.DRUID_IT_IMAGE_NAME }}
