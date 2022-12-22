@@ -86,7 +86,6 @@ jobs:
         run: |
           ./it.sh ci
       - name: Container build
-        if: steps.docker_env.outputs.cache-hit != 'true'
         id: docker_build
         run: |
           ./it.sh image
