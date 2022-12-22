@@ -95,10 +95,10 @@ jobs:
       - name: Upload image
         uses: ishworkh/docker-image-artifact-upload@v1
         with:
-          image: "${{ steps.maven_build.outputs.DRUID_IT_IMAGE_NAME }}-jdk${{ matrix.jdk }}"
+          image: "${{ steps.docker_build.outputs.DRUID_IT_IMAGE_NAME }}-jdk${{ matrix.jdk }}"
           retention_days: "2"
     outputs:
-      DRUID_IT_IMAGE_NAME: ${{ steps.maven_build.outputs.DRUID_IT_IMAGE_NAME }}
+      DRUID_IT_IMAGE_NAME: ${{ steps.docker_build.outputs.DRUID_IT_IMAGE_NAME }}
 
   its:
     needs: build
