@@ -14,7 +14,7 @@
 # limitations under the License.
 
 on:
-  workflow_call
+  workflow_call:
     inputs:
       druid_it_image_name:
         required: true
