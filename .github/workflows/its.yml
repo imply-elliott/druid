@@ -94,7 +94,7 @@ jobs:
           image: "${{ env.DRUID_IT_IMAGE_NAME }}-jdk${{ matrix.jdk }}"
           retention_days: "2"
     outputs:
-      DRUID_IT_IMAGE_NAME: ${{ steps.maven_build.outputs.DRUID_IT_IMAGE_NAME }}
+      DRUID_IT_IMAGE_NAME: ${{ steps.maven_build.maven_build.outputs.DRUID_IT_IMAGE_NAME }}
 
   its:
     needs: build
