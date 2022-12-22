@@ -87,14 +87,14 @@ jobs:
           ./it.sh image
           source ./integration-tests-ex/image/target/env.sh
           docker tag $DRUID_IT_IMAGE_NAME $DRUID_IT_IMAGE_NAME-jdk${{ matrix.jdk }}
-          echo "DRUID_IT_IMAGE_NAME=$DRUID_IT_IMAGE_NAME" >> $GITHUB_ENV
-      - name: Upload image
+          echo "DRUID_IT_IMAGE_NAME=$DRUID_IT_IMAGE_NAME" >> $GITHUB_OUTPUT
+]      - name: Upload image
         uses: ishworkh/docker-image-artifact-upload@v1
         with:
-          image: "${{ env.DRUID_IT_IMAGE_NAME }}-jdk${{ matrix.jdk }}"
+          image: "${{ steps.maven_build.outputs.DRUID_IT_IMAGE_NAME }}-jdk${{ matrix.jdk }}"
           retention_days: "2"
     outputs:
-      DRUID_IT_IMAGE_NAME: ${{ steps.maven_build.maven_build.outputs.DRUID_IT_IMAGE_NAME }}
+      DRUID_IT_IMAGE_NAME: ${{ steps.maven_build.outputs.DRUID_IT_IMAGE_NAME }}
 
   its:
     needs: build
@@ -104,4 +104,4 @@ jobs:
     needs: build
     uses: imply-elliott/druid/.github/workflows/it-ex.yml@github-actions-its
     with:
-      druid_it_image_name: "${{ needs.build.outputs.DRUID_IT_IMAGE_NAME }}"
+      druid_it_image_name: "${{ needs.maven_build.outputs.DRUID_IT_IMAGE_NAME }}"
