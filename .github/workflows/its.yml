@@ -73,7 +73,7 @@ jobs:
           restore-keys: |
             maven-${{ runner.os }}-${{ matrix.jdk }}-targets-
       - name: Cache docker env
-        id: docker
+        id: docker_env
         uses: actions/cache@v3
         with:
           path: ./integration-tests-ex/image/target/env.sh
@@ -81,9 +81,14 @@ jobs:
           restore-keys: |
             maven-${{ runner.os }}-${{ matrix.jdk }}-docker-
       - name: Maven build
+        if: steps.maven.outputs.cache-hit != 'true' && steps.target.outputs.cache-hit != 'true'
         id: maven_build
         run: |
-          ./it.sh ci &&
+          ./it.sh ci
+      - name: Container build
+        if: steps.docker_env.outputs.cache-hit != 'true'
+        id: docker_build
+        run: |
           ./it.sh image
           source ./integration-tests-ex/image/target/env.sh
           docker tag $DRUID_IT_IMAGE_NAME $DRUID_IT_IMAGE_NAME-jdk${{ matrix.jdk }}
@@ -104,4 +109,4 @@ jobs:
     needs: build
     uses: imply-elliott/druid/.github/workflows/it-ex.yml@github-actions-its
     with:
-      druid_it_image_name: "${{ needs.maven_build.outputs.DRUID_IT_IMAGE_NAME }}"
+      druid_it_image_name: "${{ needs.build.outputs.DRUID_IT_IMAGE_NAME }}"
