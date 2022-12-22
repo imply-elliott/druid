@@ -86,19 +86,23 @@ jobs:
         run: |
           ./it.sh ci
       - name: Container build
-        id: docker_build
+        if: steps.docker_env.outputs.cache-hit != 'true'
         run: |
           ./it.sh image
+      - name: Set docker image name
+        id: docker_image_name
+        run: |
           source ./integration-tests-ex/image/target/env.sh
           docker tag $DRUID_IT_IMAGE_NAME $DRUID_IT_IMAGE_NAME-jdk${{ matrix.jdk }}
           echo "DRUID_IT_IMAGE_NAME=$DRUID_IT_IMAGE_NAME" >> $GITHUB_OUTPUT
       - name: Upload image
+        if: steps.docker_env.outputs.cache-hit != 'true'
         uses: ishworkh/docker-image-artifact-upload@v1
         with:
-          image: "${{ steps.docker_build.outputs.DRUID_IT_IMAGE_NAME }}-jdk${{ matrix.jdk }}"
+          image: "${{ steps.docker_image_name.outputs.DRUID_IT_IMAGE_NAME }}-jdk${{ matrix.jdk }}"
           retention_days: "2"
     outputs:
-      DRUID_IT_IMAGE_NAME: ${{ steps.docker_build.outputs.DRUID_IT_IMAGE_NAME }}
+      DRUID_IT_IMAGE_NAME: ${{ steps.docker_image_name.outputs.DRUID_IT_IMAGE_NAME }}
 
   its:
     needs: build
