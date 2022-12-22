@@ -74,16 +74,16 @@ jobs:
           restore-keys: |
             maven-${{ runner.os }}-${{ matrix.jdk }}-docker-env-
       - name: Checkout branch
-        if: (steps.maven.outputs.cache-hit != 'true' || steps.target.outputs.cache-hit != 'true' || steps.docker_env.outputs.cache-hit != 'true')
+        if: (steps.maven.outputs.cache-hit != 'true' && steps.target.outputs.cache-hit != 'true' && steps.docker_env.outputs.cache-hit != 'true')
         uses: actions/checkout@v3
       - name: Setup java
-        if: (steps.maven.outputs.cache-hit != 'true' || steps.target.outputs.cache-hit != 'true' || steps.docker_env.outputs.cache-hit != 'true')
+        if: (steps.maven.outputs.cache-hit != 'true' && steps.target.outputs.cache-hit != 'true' && steps.docker_env.outputs.cache-hit != 'true')
         uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
           java-version: ${{ matrix.jdk }}
       - name: Maven build
-        if: (steps.maven.outputs.cache-hit != 'true' || steps.target.outputs.cache-hit != 'true')
+        if: (steps.maven.outputs.cache-hit != 'true' && steps.target.outputs.cache-hit != 'true')
         id: maven_build
         run: |
           ./it.sh ci
