@@ -97,7 +97,7 @@ jobs:
         id: docker_image_name
         run: |
           source ./integration-tests-ex/image/target/env.sh
-          echo "DRUID_IT_IMAGE_NAME=$(echo $DRUID_IT_IMAGE_NAME | sed 's/\./_/g' | sed  's/\//_/g')" >> $GITHUB_OUTPUT
+          echo "DRUID_IT_IMAGE_NAME=$(echo $DRUID_IT_IMAGE_NAME | sed 's/\./_/g; s/\//_/g; s/\:/-/g')" >> $GITHUB_OUTPUT
       #- name: Upload image
       #  if: steps.docker_env.outputs.cache-hit != 'true'
       #  uses: ishworkh/docker-image-artifact-upload@v1
