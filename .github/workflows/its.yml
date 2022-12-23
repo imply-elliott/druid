@@ -107,13 +107,13 @@ jobs:
       - name: Save docker container to archive
         run: |
           source ./integration-tests-ex/image/target/env.sh
-          docker save ${{ steps.docker_image_name.outputs.DRUID_IT_IMAGE_NAME }}-jdk${{ matrix.jdk }} | gzip > ${{ steps.docker_image_name.outputs.DRUID_IT_IMAGE_NAME }}-jdk${{ matrix.jdk }}.tar.gz
+          docker save "$DRUID_IT_IMAGE_NAME" | gzip > ${{ steps.docker_image_name.outputs.DRUID_IT_IMAGE_NAME }}-jdk${{ matrix.jdk }}.tar.gz
       - name: Upload image
         if: steps.docker_env.outputs.cache-hit != 'true'
         uses: actions/upload-artifact@v3
         with:
           path: ./${{ steps.docker_image_name.outputs.DRUID_IT_IMAGE_NAME }}-jdk${{ matrix.jdk }}.tar.gz
-          retention_days: "1"
+          retention-days: "1"
     outputs:
       DRUID_IT_IMAGE_NAME: ${{ steps.docker_image_name.outputs.DRUID_IT_IMAGE_NAME }}
 
