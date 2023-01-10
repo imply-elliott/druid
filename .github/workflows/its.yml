@@ -74,12 +74,13 @@ jobs:
           restore-keys: |
             maven-${{ runner.os }}-${{ matrix.jdk }}-docker-env
       - name: Cache image
+        id: docker_container
         uses: actions/cache@v3
         with:
-          key: ${{ steps.docker_image_name.outputs.DRUID_IT_IMAGE_NAME }}-jdk${{ matrix.jdk }}.tar.gz-${{ hashFiles('**/pom.xml') }}
-          path: ./${{ steps.docker_image_name.outputs.DRUID_IT_IMAGE_NAME }}-jdk${{ matrix.jdk }}.tar.gz
+          key: druid-container-jdk${{ matrix.jdk }}.tar.gz-${{ hashFiles('**/pom.xml') }}
+          path: ./druid-container-jdkjdk${{ matrix.jdk }}.tar.gz
           restore-keys: |
-            ${{ steps.docker_image_name.outputs.DRUID_IT_IMAGE_NAME }}-jdk${{ matrix.jdk }}.tar.gz
+            druid-container-jdk${{ matrix.jdk }}.tar.gz
       - name: Checkout branch
         if: (steps.maven.outputs.cache-hit != 'true' || steps.target.outputs.cache-hit != 'true' || steps.docker_env.outputs.cache-hit != 'true')
         uses: actions/checkout@v3
@@ -95,7 +96,7 @@ jobs:
         run: |
           ./it.sh ci
       - name: Container build
-        #if: steps.docker_env.outputs.cache-hit != 'true'
+        if: steps.docker_container.outputs.cache-hit != 'true'
         run: |
           ./it.sh image
           source ./integration-tests-ex/image/target/env.sh
@@ -115,7 +116,7 @@ jobs:
         run: |
           source ./integration-tests-ex/image/target/env.sh
           echo $DRUID_IT_IMAGE_NAME
-          docker save "$DRUID_IT_IMAGE_NAME" | gzip > ${{ steps.docker_image_name.outputs.DRUID_IT_IMAGE_NAME }}-jdk${{ matrix.jdk }}.tar.gz
+          docker save "$DRUID_IT_IMAGE_NAME" | gzip > druid-container-jdk${{ matrix.jdk }}.tar.gz
       #- name: Upload image
       #  if: steps.docker_env.outputs.cache-hit != 'true'
       #  uses: actions/upload-artifact@v3
