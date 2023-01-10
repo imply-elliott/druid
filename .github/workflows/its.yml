@@ -73,6 +73,14 @@ jobs:
           key: maven-${{ runner.os }}-${{ matrix.jdk }}-docker-env-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             maven-${{ runner.os }}-${{ matrix.jdk }}-docker-env
+      - name: Cache image
+        if: steps.docker_env.outputs.cache-hit != 'true'
+        uses: actions/cache@v3
+        with:
+          key: ${{ steps.docker_image_name.outputs.DRUID_IT_IMAGE_NAME }}-jdk${{ matrix.jdk }}.tar.gz-${{ hashFiles('**/pom.xml') }}
+          path: ./${{ steps.docker_image_name.outputs.DRUID_IT_IMAGE_NAME }}-jdk${{ matrix.jdk }}.tar.gz
+          restore-keys: |
+            ${{ steps.docker_image_name.outputs.DRUID_IT_IMAGE_NAME }}-jdk${{ matrix.jdk }}.tar.gz
       - name: Checkout branch
         if: (steps.maven.outputs.cache-hit != 'true' || steps.target.outputs.cache-hit != 'true' || steps.docker_env.outputs.cache-hit != 'true')
         uses: actions/checkout@v3
@@ -116,14 +124,6 @@ jobs:
       #    name: ${{ steps.docker_image_name.outputs.DRUID_IT_IMAGE_NAME }}-jdk${{ matrix.jdk }}.tar.gz
       #    path: ./${{ steps.docker_image_name.outputs.DRUID_IT_IMAGE_NAME }}-jdk${{ matrix.jdk }}.tar.gz
       #    retention-days: "1"
-      - name: Cache image
-        if: steps.docker_env.outputs.cache-hit != 'true'
-        uses: actions/cache@v3
-        with:
-          key: ${{ steps.docker_image_name.outputs.DRUID_IT_IMAGE_NAME }}-jdk${{ matrix.jdk }}.tar.gz-${{ hashFiles('**/pom.xml') }}
-          path: ./${{ steps.docker_image_name.outputs.DRUID_IT_IMAGE_NAME }}-jdk${{ matrix.jdk }}.tar.gz
-          restore-keys: |
-            ${{ steps.docker_image_name.outputs.DRUID_IT_IMAGE_NAME }}-jdk${{ matrix.jdk }}.tar.gz
     outputs:
       DRUID_IT_IMAGE_NAME: ${{ steps.docker_image_name.outputs.DRUID_IT_IMAGE_NAME }}
 

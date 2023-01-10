@@ -96,6 +96,7 @@ jobs:
         uses: actions/cache/restore@v3
         with:
           key: ${{ inputs.druid_it_image_name }}-jdk${{ inputs.build_jdk }}.tar.gz
+          path: ./${{ inputs.druid_it_image_name }}-jdk${{ inputs.build_jdk }}.tar.gz
       - name: Load docker image
         run: |
           docker load --input ${{ inputs.druid_it_image_name }}-jdk${{ inputs.build_jdk }}.tar.gz
