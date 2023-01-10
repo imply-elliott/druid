@@ -88,10 +88,14 @@ jobs:
       #  uses: ishworkh/docker-image-artifact-download@v1
       #  with:
       #    image: "${{ inputs.druid_it_image_name }}-jdk${{ inputs.build_jdk }}"
-      - name: Download docker image
-        uses: actions/download-artifact@v3
+      #- name: Download docker image
+      #  uses: actions/download-artifact@v3
+      #  with:
+      #    name: ${{ inputs.druid_it_image_name }}-jdk${{ inputs.build_jdk }}.tar.gz
+      - name: Retrieve cached docker image
+        uses: actions/cache/restore@v3
         with:
-          name: ${{ inputs.druid_it_image_name }}-jdk${{ inputs.build_jdk }}.tar.gz
+          key: ${{ inputs.druid_it_image_name }}-jdk${{ inputs.build_jdk }}.tar.gz
       - name: Load docker image
         run: |
           docker load --input ${{ inputs.druid_it_image_name }}-jdk${{ inputs.build_jdk }}.tar.gz
