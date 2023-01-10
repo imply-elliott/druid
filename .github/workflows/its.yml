@@ -82,10 +82,10 @@ jobs:
           restore-keys: |
             druid-container-jdk${{ matrix.jdk }}.tar.gz
       - name: Checkout branch
-        if: (steps.maven.outputs.cache-hit != 'true' || steps.target.outputs.cache-hit != 'true' || steps.docker_env.outputs.cache-hit != 'true')
+        if: (steps.maven.outputs.cache-hit != 'true' || steps.target.outputs.cache-hit != 'true' || steps.docker_container.outputs.cache-hit != 'true')
         uses: actions/checkout@v3
       - name: Setup java
-        if: (steps.maven.outputs.cache-hit != 'true' || steps.target.outputs.cache-hit != 'true' || steps.docker_env.outputs.cache-hit != 'true')
+        if: (steps.maven.outputs.cache-hit != 'true' || steps.target.outputs.cache-hit != 'true')
         uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
