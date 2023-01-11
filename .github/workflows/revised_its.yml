@@ -95,7 +95,7 @@ jobs:
       - name: Retrieve cached docker image
         uses: actions/cache/restore@v3
         with:
-          key: druid-container--jdk${{ inputs.build_jdk }}.tar.gz
+          key: druid-container-jdk${{ inputs.build_jdk }}.tar.gz
           path: ./druid-container-jdk${{ inputs.build_jdk }}.tar.gz
       - name: Load docker image
         run: |
