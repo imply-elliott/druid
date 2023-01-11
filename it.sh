@@ -71,7 +71,7 @@ case $CMD in
     usage
     ;;
   "ci" )
-    mvn --no-transfer-progress clean package dependency:resolve dependency:go-offline -P dist $MAVEN_IGNORE -T1.0C -pl :distribution
+    mvn --no-transfer-progress clean install dependency:go-offline -P dist $MAVEN_IGNORE -T1.0C
     ;;
   "build" )
     mvn --no-transfer-progress clean package -P dist $MAVEN_IGNORE -T1.0C
