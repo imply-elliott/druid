@@ -37,6 +37,8 @@ jobs:
         jdk: ['8', '11', '17']
     runs-on: ubuntu-22.04
     steps:
+      - name: Checkout branch
+        uses: actions/checkout@v3
       - name: Cache Maven m2 repository
         id: maven
         uses: actions/cache@v3
@@ -72,7 +74,7 @@ jobs:
           path: ./integration-tests-ex/image/target/env.sh
           key: maven-${{ runner.os }}-${{ matrix.jdk }}-docker-env-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
-            maven-${{ runner.os }}-${{ matrix.jdk }}-docker-env
+            maven-${{ runner.os }}-${{ matrix.jdk }}-docker-env-
       - name: Cache image
         id: docker_container
         uses: actions/cache@v3
@@ -80,10 +82,7 @@ jobs:
           key: druid-container-jdk${{ matrix.jdk }}.tar.gz-${{ hashFiles('**/pom.xml') }}
           path: ./druid-container-jdk${{ matrix.jdk }}.tar.gz
           restore-keys: |
-            druid-container-jdk${{ matrix.jdk }}.tar.gz
-      - name: Checkout branch
-        if: (steps.maven.outputs.cache-hit != 'true' || steps.target.outputs.cache-hit != 'true' || steps.docker_container.outputs.cache-hit != 'true')
-        uses: actions/checkout@v3
+            druid-container-jdk${{ matrix.jdk }}.tar.gz-
       - name: Setup java
         if: (steps.maven.outputs.cache-hit != 'true' || steps.target.outputs.cache-hit != 'true')
         uses: actions/setup-java@v3
